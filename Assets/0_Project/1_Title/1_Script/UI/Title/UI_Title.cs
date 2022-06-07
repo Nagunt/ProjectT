@@ -29,7 +29,7 @@ namespace TP.UI {
         }
 
         private void OnClick_Start() {
-            Global_SceneManager.LoadScene(SceneID.World);
+            Global_SceneManager.LoadSceneAsync(SceneID.World);
         }
 
         private void OnClick_Load() {

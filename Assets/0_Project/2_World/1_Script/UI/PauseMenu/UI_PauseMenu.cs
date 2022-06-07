@@ -29,7 +29,7 @@ namespace TP.UI {
         }
 
         private void OnClick_Book() {
-            Debug.Log("Book");
+            Event.Global_EventSystem.UI.Call(UIEventID.World_µµ°¨UIOpen);
         }
 
         private void OnClick_Save() {
@@ -45,7 +45,6 @@ namespace TP.UI {
         }
 
         private void OnClick_Home() {
-            Debug.Log("Home");
             Global_SceneManager.LoadScene(SceneID.Title);
         }
     }

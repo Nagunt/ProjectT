@@ -1,11 +1,11 @@
+using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using DG.Tweening;
-using UnityEngine;
 using System.Linq;
 using TP.Data;
 using TP.Event;
+using UnityEngine;
 
 namespace TP.Sound {
     public class Global_SoundManager : MonoBehaviour {
@@ -109,6 +109,8 @@ namespace TP.Sound {
         private Dictionary<int, AudioObject> m_audio;
         private Queue<AudioSource> m_audioQueue;
         private Dictionary<int, Tweener> m_tweeners;
+        private Dictionary<SoundID, AudioClip> m_localSoundData;
+        private Dictionary<SoundID, AudioClip> m_globalSoundData;
 
         private void Awake() {
             Debug.Log("사운드매니저 초기화");
@@ -121,7 +123,37 @@ namespace TP.Sound {
                 newAudio.gameObject.SetActive(false);
                 m_audioQueue.Enqueue(newAudio);
             }
+            Global_EventSystem.Scene.onSceneChanged += OnSceneChanged;
             Global_EventSystem.Sound.onBGMValueChanged += OnBGMValueChanged;
+        }
+
+        public static void AddSoundData(SerializableDictionary<SoundID, AudioClip> soundData, bool isLocal = true) {
+            if (isLocal) {
+                if (m_instance.m_localSoundData == null) {
+                    m_instance.m_localSoundData = new Dictionary<SoundID, AudioClip>();
+                }
+                foreach (SerializableDictionary<SoundID, AudioClip>.Pair kv in soundData) {
+                    if (m_instance.m_localSoundData.ContainsKey(kv.Key)) {
+                        m_instance.m_localSoundData[kv.Key] = kv.Value;
+                    }
+                    else {
+                        m_instance.m_localSoundData.Add(kv.Key, kv.Value);
+                    }
+                }
+            }
+            else {
+                if (m_instance.m_globalSoundData == null) {
+                    m_instance.m_globalSoundData = new Dictionary<SoundID, AudioClip>();
+                }
+                foreach (SerializableDictionary<SoundID, AudioClip>.Pair kv in soundData) {
+                    if (m_instance.m_globalSoundData.ContainsKey(kv.Key)) {
+                        m_instance.m_globalSoundData[kv.Key] = kv.Value;
+                    }
+                    else {
+                        m_instance.m_globalSoundData.Add(kv.Key, kv.Value);
+                    }
+                }
+            }
         }
 
         public static void PlaySFX(SoundID id) {
@@ -142,7 +174,7 @@ namespace TP.Sound {
                 return;
             }
 
-            AudioClip audioClip = Global_SoundLoader.GetClip(id);
+            AudioClip audioClip = GetClip(id);
 
             if (audioClip == null) {
                 Debug.Log($"{id} : 해당하는 파일이 존재하지 않습니다.");
@@ -187,7 +219,7 @@ namespace TP.Sound {
                 return -1;
             }
 
-            AudioClip audioClip = Global_SoundLoader.GetClip(id);
+            AudioClip audioClip = GetClip(id);
 
             if (audioClip == null) {
                 Debug.Log($"{id} : 해당하는 파일이 존재하지 않습니다.");
@@ -376,7 +408,34 @@ namespace TP.Sound {
             Global_EventSystem.Sound.CallOnSoundEnd(audioObject.ID);
         }
 
-        void OnBGMValueChanged(float value) {
+        public static AudioClip GetClip(string key) {
+            if (m_instance == null) return null;
+            if (Enum.TryParse(key, out SoundID id)) {
+                return GetClip(id);
+            }
+            return null;
+        }
+
+        public static AudioClip GetClip(SoundID key) {
+            if (m_instance == null) return null;
+            if (m_instance.m_globalSoundData.TryGetValue(key, out AudioClip globalValue)) {
+                return globalValue;
+            }
+            else {
+                if (m_instance.m_localSoundData.TryGetValue(key, out AudioClip localValue)) {
+                    return localValue;
+                }
+            }
+            return null;
+        }
+
+        private void OnSceneChanged(string current, string next) {
+            if (m_localSoundData != null &&
+                m_localSoundData.Count > 0) {
+                m_localSoundData.Clear();
+            }
+        }
+        private void OnBGMValueChanged(float value) {
             foreach (KeyValuePair<int, AudioObject> kv in m_audio) {
                 if (m_tweeners.ContainsKey(kv.Key) == false) {
                     kv.Value.AudioSource.volume = value;

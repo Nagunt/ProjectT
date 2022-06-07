@@ -103,6 +103,8 @@ namespace TP.UI {
 
             TPTextStyle style = default;
             Stack<TPTextStyle> styleStack = new Stack<TPTextStyle>();
+            Stack<Color> colorStack = new Stack<Color>();
+            Stack<string> keywordStack = new Stack<string>();
             int lineCount = 1;
             string content = string.Empty;
 
@@ -196,29 +198,56 @@ namespace TP.UI {
                             break;
                         case "COLOR":
                             if (isEndTag) {
-                                style.attribute &= ~TPTextStyleAttribute.Color;
+                                if (colorStack.Count > 0) {
+                                    colorStack.Pop();
+                                    if (colorStack.Count == 0) {
+                                        style.attribute &= ~TPTextStyleAttribute.Color;
+                                        style.color = default;
+                                    }
+                                    else {
+                                        style.color = colorStack.Peek();
+                                    }
+                                }
+                                else {
+                                    AddContent(tagData);
+                                    continue;
+                                }
                             }
                             else {
                                 if (ColorUtility.TryParseHtmlString(tagContent, out Color color)) {
                                     style.attribute |= TPTextStyleAttribute.Color;
                                     style.color = color;
+                                    colorStack.Push(color);
                                 }
                             }
                             break;
                         case "KEYWORD":
                             if (isEndTag) {
-                                style.attribute &= ~TPTextStyleAttribute.Keyword;
+                                if (keywordStack.Count > 0) {
+                                    keywordStack.Pop();
+                                    if (keywordStack.Count == 0) {
+                                        style.attribute &= ~TPTextStyleAttribute.Keyword;
+                                        style.keyword = string.Empty;
+                                    }
+                                    else {
+                                        style.keyword = keywordStack.Peek();
+                                    }
+                                }
+                                else {
+                                    AddContent(tagData);
+                                    continue;
+                                }
                             }
                             else {
                                 style.attribute |= TPTextStyleAttribute.Keyword;
                                 style.keyword = tagContent;
+                                keywordStack.Push(tagContent);
                             }
                             break;
                         default:
                             AddContent(tagData);
                             continue;
                     }
-                    
                     MakeWord(content, GetStyle());
                     styleStack.Push(style);
 
@@ -348,8 +377,7 @@ namespace TP.UI {
                 }
 
                 TPTextStyle GetStyle() {
-                    // Keyword, Color 등 중첩 가능한 태그의 경우 한번에 중첩이 모두 사라지는 현상 있음
-                    if(styleStack.Count > 0) {
+                    if (styleStack.Count > 0) {
                         return styleStack.Peek();
                     }
                     return default;

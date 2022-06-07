@@ -25,8 +25,8 @@ namespace TP.Event {
             }
 
             public static void Init() {
-                SceneManager.activeSceneChanged += (current, next) => {
-                    CallOnSceneChanged(current.name, next.name);
+                SceneManager.activeSceneChanged += (a, b) => {
+                    Debug.Log($"ActiveSceneChanged 호출 : {a} => {b}");
                 };
             }
         }

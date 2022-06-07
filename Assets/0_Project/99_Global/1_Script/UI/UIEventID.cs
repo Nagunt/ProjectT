@@ -22,6 +22,10 @@ namespace TP.UI {
         Global_터치잠금설정,
         Global_터치잠금해제,
 
+        Global_로딩UIOpen,
+        Global_로딩UIClose,
+        Global_로딩UI진행도설정,
+
         World_대화UI이름설정,
         World_대화UI직책설정,
         World_대화UI내용설정,
@@ -29,6 +33,9 @@ namespace TP.UI {
 
         World_로그UIOpen,
         World_로그UIClose,
+
+        World_도감UIOpen,
+        World_도감UIClose,
 
         World_정지메뉴UIOpen,
         World_정지메뉴UIClose,
