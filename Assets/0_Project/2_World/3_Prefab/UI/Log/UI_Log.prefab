@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6449406931340108066}
   - component: {fileID: 6449406931340108076}
   - component: {fileID: 6449406931340108077}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Line_Deco
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6449406931412789851}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Sliding Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 6449406931596774409}
   - component: {fileID: 6449406931596774411}
   - component: {fileID: 6449406931596774408}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image_Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 6449406931808836343}
   - component: {fileID: 6449406931808836340}
   - component: {fileID: 1843121202410984680}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Scrollbar Vertical
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,7 +337,7 @@ GameObject:
   - component: {fileID: 6449406931822476781}
   - component: {fileID: 6449406931822476783}
   - component: {fileID: 6449406931822476780}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,7 +410,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6449406931899421509}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -446,7 +446,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6449406931950286977}
   - component: {fileID: 78118369567179239}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UI_Log
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +492,6 @@ MonoBehaviour:
   m_logCount: 15
   m_ScrollRect: {fileID: 6449406933240247184}
   m_Deco: {fileID: 6449406931340108066}
-  m_Scrollbar: {fileID: 6449406931808835850}
   subUI_Log: {fileID: 7304539240031522866, guid: 422941037ca8b3745a2b19f7bcd19d52,
     type: 3}
 --- !u!1 &6449406932437184464
@@ -507,7 +506,7 @@ GameObject:
   - component: {fileID: 6449406932437184476}
   - component: {fileID: 6449406932437184477}
   - component: {fileID: 6449406932437184466}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Button_Close
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -626,7 +625,7 @@ GameObject:
   - component: {fileID: 6449406932580790396}
   - component: {fileID: 6449406932580790398}
   - component: {fileID: 6449406932580790399}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image_BackgroundAlpha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -701,7 +700,7 @@ GameObject:
   - component: {fileID: 6449406932820276782}
   - component: {fileID: 6449406932820276776}
   - component: {fileID: 6449406932820276777}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image_Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -777,7 +776,7 @@ GameObject:
   - component: {fileID: 6449406933175728676}
   - component: {fileID: 6449406933175728677}
   - component: {fileID: 6449406933175728698}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Viewport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -868,7 +867,7 @@ GameObject:
   - component: {fileID: 6449406933240247186}
   - component: {fileID: 6449406933240247187}
   - component: {fileID: 6449406933240247184}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
   m_Icon: {fileID: 0}

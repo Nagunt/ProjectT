@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1058720970643821791}
   - component: {fileID: 8550708462931601348}
   - component: {fileID: 1903686436367311492}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Button_Book
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 2910562240671646794}
   - component: {fileID: 7312396221291043075}
   - component: {fileID: 5854219569717692311}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Button_Load
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 7488915366270691078}
   - component: {fileID: 4834229014312139584}
   - component: {fileID: 8130465992354480629}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Button_Setting
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -372,7 +372,7 @@ GameObject:
   - component: {fileID: 5369894513551207959}
   - component: {fileID: 2202315956487762952}
   - component: {fileID: 5392737630025772118}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Button_Home
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +492,7 @@ GameObject:
   - component: {fileID: 5368051037967017019}
   - component: {fileID: 9066399770481903708}
   - component: {fileID: 2063326732955571752}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Button_Save
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -610,7 +610,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8908360976457723843}
   - component: {fileID: 7740786550932492821}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UI_PauseMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -672,7 +672,7 @@ GameObject:
   - component: {fileID: 1605441477124433787}
   - component: {fileID: 238644658207178065}
   - component: {fileID: 8391078735551425964}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Button_ExitTouchArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}

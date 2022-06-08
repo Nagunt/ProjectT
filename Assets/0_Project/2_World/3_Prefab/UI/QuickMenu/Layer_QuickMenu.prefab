@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6380917579242671532}
   - component: {fileID: 3774473865421634885}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Layer_QuickMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}

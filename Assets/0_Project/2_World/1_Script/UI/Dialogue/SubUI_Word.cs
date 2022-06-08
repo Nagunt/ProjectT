@@ -35,7 +35,6 @@ namespace TP.UI {
         public static int FONTSIZE_NORMAL { get; private set; }
         public static int FONTSIZE_BIG { get; private set; }
         public static void SetFontSizeData(int value) {
-            Debug.Log("최대 폰트 크기는 : " + value);
             FONTSIZE_BIG = value;
             FONTSIZE_NORMAL = (int)(value * .8f);
             FONTSIZE_SMALL = (int)(value * .6f);

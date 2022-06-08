@@ -23,12 +23,23 @@ namespace TP.UI {
             words.Add(word);
             Width += word.PreferredWidth;
         }
+
+        public void AddSpace(float space) {
+            Width += space;
+        }
         public SubUI_Line SetShape(float pos, float size) {
             RectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, pos, size);
             return this;
         }
         public SubUI_Line Skip() {
             isSkip = true;
+            return this;
+        }
+        public SubUI_Line Show() {
+            CanvasGroup.alpha = 1;
+            foreach (SubUI_Word word in words) {
+                word.SetActive(true).SetCharacterCount(99999);
+            }
             return this;
         }
         public void TypewriterEffect(UnityAction onComplete) {

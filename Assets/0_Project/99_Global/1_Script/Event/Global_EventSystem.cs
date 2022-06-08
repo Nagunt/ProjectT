@@ -58,6 +58,38 @@ namespace TP.Event {
             }
         }
 
+        public static class VisualNovel {
+
+            public delegate void VoidEvent();
+            public delegate void BoolEvent(bool state);
+
+            public static VoidEvent onCommandEnd;
+            public static VoidEvent onScreenTouched;
+            public static BoolEvent onSkipStateChanged;
+            public static BoolEvent onGameStateChanged;
+
+            public static bool Skip { get; private set; }
+            public static bool GameState { get; private set; }
+
+            public static void CallOnCommandEnd() {
+                onCommandEnd?.Invoke();
+            }
+
+            public static void CallOnScreenTouched() {
+                onScreenTouched?.Invoke();
+            }
+
+            public static void CallOnSkipStateChanged(bool state) {
+                Skip = state;
+                onSkipStateChanged?.Invoke(state);
+            }
+
+            public static void CallOnGameStateChanged(bool state) {
+                GameState = state;
+                onGameStateChanged?.Invoke(state);
+            }
+        }
+
         public static class UI {
 
             public delegate void UIEvent_0차원();

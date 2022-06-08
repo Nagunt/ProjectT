@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3926861880429814610}
   - component: {fileID: 3926861880429814609}
   - component: {fileID: 3926861880429814608}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SubUI_LogWord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 3926861881316144882}
   - component: {fileID: 3926861881316144884}
   - component: {fileID: 3926861881316144883}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text_Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -20,6 +20,57 @@ namespace TP.Data {
         }
     }
 
+    [System.Serializable]
+    public struct TPSpriteData {
+        public string name;
+        public float posX;
+        public float posY;
+        public float posZ;
+        public float scaleX;
+        public float scaleY;
+        public float scaleZ;
+        public string imageKey;
+        public float r;
+        public float g;
+        public float b;
+        public float a;
+        public bool flipX;
+        public bool flipY;
+        public int spriteType;
+
+        public Vector3 Position {
+            get {
+                return new Vector3(posX, posY, posZ);
+            }
+            set {
+                posX = value.x;
+                posY = value.y;
+                posZ = value.z;
+            }
+        }
+        public Vector3 Scale {
+            get {
+                return new Vector3(scaleX, scaleY, scaleZ);
+            }
+            set {
+                scaleX = value.x;
+                scaleY = value.y;
+                scaleZ = value.z;
+            }
+        }
+        public Color Color {
+            get {
+                return new Color(r, g, b, a);
+            }
+            set {
+                r = value.r;
+                g = value.g;
+                b = value.b;
+                a = value.a;
+            }
+        }
+    }
+
     public static class Global_LocalData {
         public static class Setting {
             [System.Serializable]

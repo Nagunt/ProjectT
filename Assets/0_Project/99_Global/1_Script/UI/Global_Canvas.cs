@@ -17,13 +17,10 @@ namespace TP.UI {
             m_instance = this;
         }
 
-        private void Start() {
-            Event.Global_EventSystem.Scene.onSceneChanged += (a, b) => {
-                mainCamera = Camera.main;
-            };
-        }
-
         public static Vector2 ScreenToLocalPosition(Vector2 position) {
+            if (m_instance.mainCamera == null) {
+                m_instance.mainCamera = Camera.main;
+            }
             Vector2 canvasSize = m_instance.m_RectTransform.sizeDelta;
             Vector2 screenSize = m_instance.mainCamera.pixelRect.size;
             Vector2 positionRatio = new Vector2(position.x / screenSize.x, position.y / screenSize.y);

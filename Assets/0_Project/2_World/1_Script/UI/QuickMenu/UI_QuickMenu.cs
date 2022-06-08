@@ -17,14 +17,16 @@ namespace TP.UI {
         [SerializeField]
         private Button button_Log;
         [SerializeField]
-        private Button button_Skip;
+        private Toggle toggle_Skip;
 
         protected override void Start() {
             button_Pause.onClick.AddListener(OnClick_Pause);
             button_QuickSave.onClick.AddListener(OnClick_QuickSave);
             button_QuickLoad.onClick.AddListener(OnClick_QuickLoad);
             button_Log.onClick.AddListener(OnClick_Log);
-            button_Skip.onClick.AddListener(OnClick_Skip);
+            toggle_Skip.onValueChanged.AddListener(OnClick_Skip);
+
+            Event.Global_EventSystem.VisualNovel.onSkipStateChanged += OnSkipValueChanged;
         }
 
         private void OnClick_Pause() {
@@ -36,15 +38,23 @@ namespace TP.UI {
         }
 
         private void OnClick_QuickLoad() {
-            Debug.Log("QuickLoad");
+            Event.Global_EventSystem.VisualNovel.CallOnSkipStateChanged(false);
         }
 
         private void OnClick_Log() {
             Event.Global_EventSystem.UI.Call(UIEventID.World_·Î±×UIOpen);
         }
 
-        private void OnClick_Skip() {
-            Debug.Log("Skip");
+        private void OnClick_Skip(bool state) {
+            Event.Global_EventSystem.VisualNovel.CallOnSkipStateChanged(state);
+        }
+
+        private void OnSkipValueChanged(bool state) {
+            toggle_Skip.isOn = state;
+        }
+
+        private void OnDestroy() {
+            Event.Global_EventSystem.VisualNovel.onSkipStateChanged -= OnSkipValueChanged;
         }
     }
 }

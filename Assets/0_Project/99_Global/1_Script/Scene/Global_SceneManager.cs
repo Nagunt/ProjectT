@@ -60,7 +60,6 @@ namespace TP.Scene {
         }
 
         private IEnumerator LoadRoutine(int index) {
-            Debug.Log("로딩 시작");
             Global_EventSystem.UI.Call(UIEventID.Global_로딩UIOpen);
             string currentScene = SceneManager.GetActiveScene().name;
 
@@ -70,23 +69,17 @@ namespace TP.Scene {
             operation.allowSceneActivation = false;
 
             while (!operation.isDone) {
-                Debug.Log(operation.progress);
                 Global_EventSystem.UI.Call<float>(UIEventID.Global_로딩UI진행도설정, operation.progress);
                 if (operation.progress >= 0.9f) {
                     if (operation.allowSceneActivation == false) {
                         Global_EventSystem.UI.Call<float>(UIEventID.Global_로딩UI진행도설정, 0.99f);
                         operation.allowSceneActivation = true;
                         yield return new WaitForEndOfFrame();
-                        Debug.Log("allowSecenActivation true");
                         Global_EventSystem.Scene.CallOnSceneChanged(currentScene, ((SceneID)index).ToString());
-                    }
-                    else {
-                        Debug.Log("asdf");
                     }
                 }
                 yield return null;
             }
-            Debug.Log("op true");
 
             Global_EventSystem.UI.Call<float>(UIEventID.Global_로딩UI진행도설정, 1f);
 

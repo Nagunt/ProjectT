@@ -43,8 +43,11 @@ namespace TP.UI {
         private int m_lineWidth = 0;
         private int m_lineHeight = 0;
 
+        private bool isSkip = false;
         private bool isTouch = false;
         private bool isTyping = false;
+
+        private SubUI_Cursor cursor;
 
         protected override void Start() {
             m_lineWidth = (int)area_Text.rect.width;
@@ -74,11 +77,16 @@ namespace TP.UI {
             m_calcWord.SetText(string.Empty);
 
             button_Touch.onClick.AddListener(OnClick_Touch);
+
+            Event.Global_EventSystem.VisualNovel.onSkipStateChanged += OnSkipStateChanged;
         }
 
         private void OnClick_Touch() {
             if (isTyping) {
                 isTouch = true;
+            }
+            else {
+                Event.Global_EventSystem.VisualNovel.CallOnScreenTouched();
             }
         }
 
@@ -92,21 +100,37 @@ namespace TP.UI {
             text_Name.SetText(value);
         }
 
-        public void SetText_Dialogue(string value, UnityAction callback) {
-            isTyping = true;
-
-            anchor_Text.anchoredPosition = new Vector2(0, 0);   // ¾ÞÄ¿ ÃÊ±âÈ­
-            for(int i = anchor_Text.childCount - 1; i >= 0; ++i) {
-                Destroy(anchor_Text.GetChild(i).gameObject);
-            }
-            m_lineStack.Clear();
+        public void SetText_Dialogue(string value, bool isClear, UnityAction callback) {
+            
 
             TPTextStyle style = default;
             Stack<TPTextStyle> styleStack = new Stack<TPTextStyle>();
             Stack<Color> colorStack = new Stack<Color>();
             Stack<string> keywordStack = new Stack<string>();
+            int prevLineCount = 0;
             int lineCount = 1;
             string content = string.Empty;
+
+            if (cursor != null) {
+                Destroy(cursor.gameObject);
+            }
+
+            if (isClear) {
+                anchor_Text.anchoredPosition = new Vector2(0, 0);   // ¾ÞÄ¿ ÃÊ±âÈ­
+                for (int i = anchor_Text.childCount - 1; i >= 0; ++i) {
+                    Destroy(anchor_Text.GetChild(i).gameObject);
+                }
+                m_lineStack.Clear();
+            }
+            else {
+                if (m_lineStack.Count > 0) {
+                    prevLineCount = m_lineStack.Count - 1;
+                    SubUI_Line lastLine = m_lineStack.Peek();
+                    m_lineStack.Clear();
+                    SubUI_Line newLine = GetLine();
+                    newLine.AddSpace(lastLine.Width);
+                }
+            }
 
             for (int i = 0; i < value.Length; ++i) {
                 if (value[i].Equals('<')) {
@@ -310,8 +334,6 @@ namespace TP.UI {
                     MakeWord(content, GetStyle());
                 }
 
-                
-
                 void MakeWord(string data, TPTextStyle style) {
                     string wordData = data;
                     TPTextStyle wordStyle = style;
@@ -338,7 +360,7 @@ namespace TP.UI {
                                     Instantiate(subUI_Word, line.RectTransform).
                                             SetText(string.IsNullOrEmpty(wordStr) ? wordData : wordStr).
                                             SetStyle(wordStyle);
-                            slicedWord.SetShape(0, slicedWord.PreferredWidth);
+                            slicedWord.SetShape(line.Width, slicedWord.PreferredWidth);
                             line.AddWord(slicedWord);
 
                             wordData = leftStr;
@@ -367,22 +389,6 @@ namespace TP.UI {
                     content = string.Empty;
                 }
 
-                SubUI_Line GetLine() {
-                    for (int i = lineCount; i > m_lineStack.Count; i--) {
-                        SubUI_Line newLine = Instantiate(subUI_Line, anchor_Text).SetShape(m_lineStack.Count * m_lineHeight, m_lineHeight);
-                        newLine.CanvasGroup.alpha = 0;
-                        m_lineStack.Push(newLine);
-                    }
-                    return m_lineStack.Peek();
-                }
-
-                TPTextStyle GetStyle() {
-                    if (styleStack.Count > 0) {
-                        return styleStack.Peek();
-                    }
-                    return default;
-                }
-
                 void AddContent(string value) {
                     content += value;
                     i += value.Length;
@@ -390,48 +396,83 @@ namespace TP.UI {
 
             }
 
-            StartCoroutine(TypewriteEffect(m_lineStack.Reverse().ToList()));
+            StartCoroutine(EffectRoutine(m_lineStack.Reverse().ToList()));
 
-            IEnumerator TypewriteEffect(List<SubUI_Line> lineData) {
-                bool isComplete = false;
-                Tweener lineEffect = null;
-                for (int i = 0; i < lineData.Count; ++i) {
-                    if (isTouch == false) {
-                        if (i >= m_lineCount) {
-                            lineEffect = anchor_Text.
-                                DOAnchorPosY(m_lineHeight * ((i - m_lineCount) + 1), 0.5f).
-                                OnComplete(() => isComplete = true).
-                                Play();
+            SubUI_Line GetLine() {
+                for (int i = lineCount; i > m_lineStack.Count; i--) {
+                    SubUI_Line newLine = Instantiate(subUI_Line, anchor_Text).SetShape((m_lineStack.Count + prevLineCount) * m_lineHeight, m_lineHeight);
+                    newLine.CanvasGroup.alpha = 0;
+                    m_lineStack.Push(newLine);
+                }
+                return m_lineStack.Peek();
+            }
+
+            TPTextStyle GetStyle() {
+                if (styleStack.Count > 0) {
+                    return styleStack.Peek();
+                }
+                return default;
+            }
+
+            IEnumerator EffectRoutine(List<SubUI_Line> lineData) {
+                if (isSkip == false) {
+                    isTyping = true;
+                    bool isComplete = false;
+                    Tweener lineEffect = null;
+                    for (int i = 0; i < lineData.Count; ++i) {
+                        if (isTouch == false) {
+                            if (i + prevLineCount >= m_lineCount) {
+                                lineEffect = anchor_Text.
+                                    DOAnchorPosY(m_lineHeight * ((i - m_lineCount) + 1 + prevLineCount), 0.5f).
+                                    OnComplete(() => isComplete = true).
+                                    Play();
+                            }
+                            else isComplete = true;
                         }
-                        else isComplete = true;
+                        if (isTouch == false) yield return new WaitUntil(() => isComplete || isTouch);
+                        if (isTouch &&
+                            lineEffect != null &&
+                            lineEffect.IsPlaying()) {
+                            lineEffect.Complete();
+                        }
+                        isComplete = false;
+                        lineData[i].TypewriterEffect(() => isComplete = true);
+                        if (isTouch == false) yield return new WaitUntil(() => isComplete || isTouch);
+                        if (isTouch) {
+                            lineData[i].Skip();
+                        }
+                        isComplete = false;
                     }
-                    if (isTouch == false) yield return new WaitUntil(() => isComplete || isTouch);
-                    if (isTouch &&
-                        lineEffect != null &&
-                        lineEffect.IsPlaying()) {
-                        lineEffect.Complete();
-                    }
-                    isComplete = false;
-                    lineData[i].TypewriterEffect(() => isComplete = true);
-                    if (isTouch == false) yield return new WaitUntil(() => isComplete || isTouch);
-                    if (isTouch) {
-                        lineData[i].Skip();
-                    }
-                    isComplete = false;
+                    isTouch = false;
+                    isTyping = false;
                 }
-                if (lineData.Count > m_lineCount) {
-                    anchor_Text.anchoredPosition = new Vector2(anchor_Text.anchoredPosition.x, m_lineHeight * (lineData.Count - m_lineCount));
+                else {
+                    for(int i = 0; i < lineData.Count; ++i) {
+                        lineData[i].Show();
+                    }
+                }
+                if (lineData.Count + prevLineCount > m_lineCount) {
+                    anchor_Text.anchoredPosition = new Vector2(anchor_Text.anchoredPosition.x, m_lineHeight * (lineData.Count - m_lineCount + prevLineCount));
                 }
 
-                Instantiate(subUI_Cursor, anchor_Text).
+                cursor = Instantiate(subUI_Cursor, anchor_Text).
                     SetHeight(m_lineHeight).
-                    SetPosition(new Vector2(lineData.Last().Width, -(lineData.Count - 1) * m_lineHeight)).
+                    SetPosition(new Vector2(lineData.Last().Width, -(lineData.Count + prevLineCount - 1) * m_lineHeight)).
                     Play();
 
-                isTouch = false;
-                isTyping = false;
                 callback?.Invoke();
             }
+        }
+
+        private void OnSkipStateChanged(bool state) {
+            isSkip = state;
+            if (state && isTyping) {
+                isTouch = true;
+            }
+        }
+
+        private void OnDestroy() {
+            Event.Global_EventSystem.VisualNovel.onSkipStateChanged -= OnSkipStateChanged;
         }
     }
 }

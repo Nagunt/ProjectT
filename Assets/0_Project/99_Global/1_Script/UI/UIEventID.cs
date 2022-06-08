@@ -29,7 +29,12 @@ namespace TP.UI {
         World_대화UI이름설정,
         World_대화UI직책설정,
         World_대화UI내용설정,
+        World_대화UI내용수정,
         World_대화UI스킵,
+
+        World_비주얼노벨UI배경설정,
+        World_비주얼노벨UI필터설정,
+        World_비주얼노벨UI캐릭터설정,
 
         World_로그UIOpen,
         World_로그UIClose,
