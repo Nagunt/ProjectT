@@ -19,30 +19,11 @@ namespace TP.Sound {
             Only = 8,           // Pause, Stop에서 무시
         }
 
-        [Serializable]
-        public struct AudioData {
-            public SoundID id;
-            public float posX;
-            public float posY;
-            public float posZ;
-            public SoundOption option;
-            public bool isPause;
-            public Vector3 Position {
-                get {
-                    return new Vector3(posX, posY, posZ);
-                }
-                set {
-                    posX = value.x;
-                    posY = value.y;
-                    posZ = value.z;
-                }
-            }
-        }
-
         private class AudioObject {
             public SoundID ID { get; private set; }
             public SoundOption Option { get; private set; }
             public int Key { get; private set; }
+            public float Fade { get; private set; }
             public Vector3 Position => GameObject.transform.position;
             public GameObject GameObject { get; private set; }
             public AudioSource AudioSource { get; private set; }
@@ -53,10 +34,11 @@ namespace TP.Sound {
             public bool IsComplete => AudioSource.isPlaying == false && (AudioSource.time >= AudioSource.clip.length - 0.02f);
             public bool IsActiveAndEnabled => AudioSource.isActiveAndEnabled;
 
-            public AudioObject(int key, SoundID id, SoundOption option, AudioSource source) {
+            public AudioObject(int key, SoundID id, SoundOption option, float fadeTime, AudioSource source) {
                 Key = key;
                 ID = id;
                 Option = option;
+                Fade = fadeTime;
                 GameObject = source.gameObject;
                 AudioSource = source;
             }
@@ -161,11 +143,11 @@ namespace TP.Sound {
         }
 
         public static void PlaySFX(SoundID id, float volume) {
-            PlaySFXAtLocation(id, Global_LocalData.Setting.SFX, Vector3.zero);
+            PlaySFXAtLocation(id, volume, Vector3.zero);
         }
 
         public static void PlaySFXAtLocation(SoundID id, Vector3 position) {
-            PlaySFXAtLocation(id, 1f, position);
+            PlaySFXAtLocation(id, Global_LocalData.Setting.SFX, position);
         }
 
         public static void PlaySFXAtLocation(SoundID id, float volume, Vector3 position) {
@@ -192,15 +174,15 @@ namespace TP.Sound {
             newAudio.transform.position = position;
 
             newAudio.Play();
-            m_instance.StartCoroutine(m_instance.CheckRoutine(new AudioObject(-1, id, SoundOption.None, newAudio)));
+            m_instance.StartCoroutine(m_instance.CheckRoutine(new AudioObject(-1, id, SoundOption.None, 0f, newAudio)));
             Global_EventSystem.Sound.CallOnSoundStart(id);
         }
 
-        public static int PlayBGM(SoundID id, SoundOption option = SoundOption.None) {
-            return PlayBGMAtLocation(id, Vector3.zero, option);
+        public static int PlayBGM(SoundID id, SoundOption option = SoundOption.None, float fadeTime = 0f) {
+            return PlayBGMAtLocation(id, Vector3.zero, option, fadeTime);
         }
 
-        public static int PlayBGMAtLocation(SoundID id, Vector3 position, SoundOption option = SoundOption.None) {
+        public static int PlayBGMAtLocation(SoundID id, Vector3 position, SoundOption option = SoundOption.None, float fadeTime = 0f) {
             // Only 프로퍼티가 있으면 해당 BGM은 반드시 하나만 존재해야 한다.
             if (option.HasFlag(SoundOption.Only)) {
                 int key = -1;
@@ -208,10 +190,10 @@ namespace TP.Sound {
                 if (list.Count > 0) {
                     key = list[0].Value.Key;
                     if (list[0].Value.IsPause) {
-                        ResumeBGM(key, option);
+                        ResumeBGM(key, option, fadeTime);
                     }
+                    return key;
                 }
-                return key;
             }
 
             if (m_instance.m_audioQueue.Count <= 0) {
@@ -243,7 +225,7 @@ namespace TP.Sound {
                 lastTweener.Kill(false);
             }
             if (option.HasFlag(SoundOption.FadeIn)) {
-                Tweener tweener = newAudio.DOFade(volume, m_instance.FADE_TIME);
+                Tweener tweener = newAudio.DOFade(volume, fadeTime);
                 tweener.
                     SetLink(newAudio.gameObject, LinkBehaviour.KillOnDisable).
                     OnStart(() => {
@@ -262,7 +244,7 @@ namespace TP.Sound {
                 newAudio.volume = volume;
                 newAudio.Play();
             }
-            AudioObject audioObject = new AudioObject(channel, id, option, newAudio);
+            AudioObject audioObject = new AudioObject(channel, id, option, fadeTime, newAudio);
             m_instance.StartCoroutine(m_instance.CheckRoutine(audioObject));
             m_instance.m_audio.Add(channel, audioObject);
             Global_EventSystem.Sound.CallOnSoundStart(id);
@@ -270,14 +252,14 @@ namespace TP.Sound {
             return channel;
         }
 
-        public static void PauseBGM(int id, SoundOption option = SoundOption.None) {
+        public static void PauseBGM(int id, SoundOption option = SoundOption.None, float fadeTime = 0f) {
             if (m_instance.m_audio.TryGetValue(id, out AudioObject audioObject)) {
                 if (m_instance.m_tweeners.TryGetValue(id, out Tweener lastTweener)) {
                     lastTweener.Kill(false);
                 }
                 AudioSource audioSource = audioObject.AudioSource;
                 if (option.HasFlag(SoundOption.FadeOut)) {
-                    Tweener tweener = audioSource.DOFade(0, m_instance.FADE_TIME);
+                    Tweener tweener = audioSource.DOFade(0, fadeTime);
                     tweener.
                         SetLink(audioSource.gameObject, LinkBehaviour.KillOnDisable).
                         OnStart(() => {
@@ -298,7 +280,7 @@ namespace TP.Sound {
             }
         }
 
-        public static void ResumeBGM(int id, SoundOption option = SoundOption.None) {
+        public static void ResumeBGM(int id, SoundOption option = SoundOption.None, float fadeTime = 0f) {
             if (m_instance.m_audio.TryGetValue(id, out AudioObject audioObject) &&
                 audioObject.IsPause) {
                 if (m_instance.m_tweeners.TryGetValue(id, out Tweener lastTweener)) {
@@ -308,7 +290,7 @@ namespace TP.Sound {
                 if (option.HasFlag(SoundOption.FadeIn)) {
                     float value = 1f;
                     audioSource.volume = 0;
-                    Tweener tweener = audioSource.DOFade(value, m_instance.FADE_TIME);
+                    Tweener tweener = audioSource.DOFade(value, fadeTime);
                     tweener.
                         SetLink(audioSource.gameObject, LinkBehaviour.KillOnDisable).
                         OnStart(() => {
@@ -331,14 +313,14 @@ namespace TP.Sound {
             }
         }
 
-        public static void StopBGM(int id, SoundOption option = SoundOption.None) {
+        public static void StopBGM(int id, SoundOption option = SoundOption.None, float fadeTime = 0f) {
             if (m_instance.m_audio.TryGetValue(id, out AudioObject audioObject)) {
                 if (m_instance.m_tweeners.TryGetValue(id, out Tweener lastTweener)) {
                     lastTweener.Kill(false);
                 }
                 AudioSource audioSource = audioObject.AudioSource;
                 if (option.HasFlag(SoundOption.FadeOut)) {
-                    Tweener tweener = audioSource.DOFade(0, m_instance.FADE_TIME);
+                    Tweener tweener = audioSource.DOFade(0, fadeTime);
                     tweener.
                         SetLink(audioSource.gameObject, LinkBehaviour.KillOnDisable).
                         OnStart(() => {
@@ -359,43 +341,50 @@ namespace TP.Sound {
             }
         }
 
-        public static void PauseAll(SoundOption option = SoundOption.None) {
+        public static void PauseAll(SoundOption option = SoundOption.None, float fadeTime = 0f) {
             foreach (KeyValuePair<int, AudioObject> kv in m_instance.m_audio) {
-                PauseBGM(kv.Key, option);
+                PauseBGM(kv.Key, option, fadeTime);
             }
         }
 
-        public static void ResumeAll(SoundOption option = SoundOption.None) {
+        public static void ResumeAll(SoundOption option = SoundOption.None, float fadeTime = 0f) {
             foreach (KeyValuePair<int, AudioObject> kv in m_instance.m_audio) {
-                ResumeBGM(kv.Key, option);
+                ResumeBGM(kv.Key, option, fadeTime);
             }
         }
 
-        public static void StopAll(SoundOption option = SoundOption.None) {
+        public static void StopAll(SoundOption option = SoundOption.None, float fadeTime = 0f) {
             foreach (KeyValuePair<int, AudioObject> kv in m_instance.m_audio) {
-                StopBGM(kv.Key, option);
+                StopBGM(kv.Key, option, fadeTime);
             }
         }
 
-        public static void Parse(AudioData[] data) {
-            if (data == null) return;
-            foreach (AudioData audioData in data) {
-                int channel = PlayBGMAtLocation(audioData.id, audioData.Position, audioData.option);
+        public static Dictionary<SoundID, int> Parse(TPAudioData[] data) {
+            Dictionary<SoundID, int> channelInfo = new Dictionary<SoundID, int>();
+            if (data == null) return channelInfo;
+            foreach (TPAudioData audioData in data) {
+                int channel = PlayBGMAtLocation(audioData.id, audioData.Position, audioData.option, audioData.fadeTime);
                 if (audioData.isPause) {
                     PauseBGM(channel);
                 }
+                if (channelInfo.ContainsKey(audioData.id) == false)
+                {
+                    channelInfo.Add(audioData.id, channel);
+                }
             }
+            return channelInfo;
         }
 
-        public static AudioData[] ToData() {
-            AudioData[] audioData = new AudioData[m_instance.m_audio.Count];
+        public static TPAudioData[] ToData() {
+            TPAudioData[] audioData = new TPAudioData[m_instance.m_audio.Count];
             int index = 0;
             foreach (KeyValuePair<int, AudioObject> kv in m_instance.m_audio) {
-                audioData[index++] = new AudioData() {
+                audioData[index++] = new TPAudioData() {
                     id = kv.Value.ID,
                     option = kv.Value.Option,
                     Position = kv.Value.Position,
-                    isPause = kv.Value.IsPause
+                    isPause = kv.Value.IsPause,
+                    fadeTime = kv.Value.Fade
                 };
             }
             return audioData;

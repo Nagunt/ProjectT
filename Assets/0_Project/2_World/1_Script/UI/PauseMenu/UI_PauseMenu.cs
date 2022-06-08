@@ -45,6 +45,7 @@ namespace TP.UI {
         }
 
         private void OnClick_Home() {
+            Sound.Global_SoundManager.StopAll(Sound.Global_SoundManager.SoundOption.FadeOut, 1f);
             Global_SceneManager.LoadScene(SceneID.Title);
         }
     }

@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using UnityEngine.Events;
+using TP.Sound;
 
 namespace TP.Data {
 
@@ -70,6 +72,42 @@ namespace TP.Data {
                 g = value.g;
                 b = value.b;
                 a = value.a;
+            }
+        }
+    }
+
+    public struct TPSelectionData
+    {
+        public string data;
+        public UnityAction callback;
+        public TPSelectionData(string _data, UnityAction _callback)
+        {
+            data = _data;
+            callback = _callback;
+        }
+    }
+
+    [Serializable]
+    public struct TPAudioData
+    {
+        public SoundID id;
+        public float posX;
+        public float posY;
+        public float posZ;
+        public Global_SoundManager.SoundOption option;
+        public bool isPause;
+        public float fadeTime;
+        public Vector3 Position
+        {
+            get
+            {
+                return new Vector3(posX, posY, posZ);
+            }
+            set
+            {
+                posX = value.x;
+                posY = value.y;
+                posZ = value.z;
             }
         }
     }
@@ -269,7 +307,7 @@ namespace TP.Data {
                 public string gameTime;
                 public string realTime;
                 public byte[] thumbnailData;
-                //public MyAudioData[] audioData;
+                public TPAudioData[] audioData;
                 //public MySpriteData[] spriteData;
                 public TPLogData lastLogData;
 
@@ -293,7 +331,7 @@ namespace TP.Data {
                     realTime = string.Empty;
                     thumbnail = null;
                     thumbnailData = null;
-                    //audioData = null;
+                    audioData = null;
                     //spriteData = null;
                     lastLogData = default;
                 }
@@ -301,8 +339,9 @@ namespace TP.Data {
                 public void Save(int slot) {
 
                     Current.realTime = System.DateTime.Now.ToString("yyyy.MM.dd HH:mm");
-                    //Current.audioData = MyAudioManager.Instance.ToData();
+
                     //Current.spriteData = MySpriteManager.Instance.ToData();
+                    Current.audioData = Global_SoundManager.ToData();
 
                     Camera mainCamera = Camera.main;
 
@@ -412,6 +451,8 @@ namespace TP.Data {
                     realTime = string.Empty;
                     thumbnail = null;
                     thumbnailData = null;
+
+                    audioData = Global_SoundManager.ToData();
 
                     binaryFormatter.Serialize(fStream, this);
                     fStream.Close();

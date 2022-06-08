@@ -8,8 +8,6 @@ using UnityEngine.UI;
 namespace TP.UI {
     public class UI_Log : UI_Default {
         [SerializeField]
-        private int m_logCount = 15;
-        [SerializeField]
         private ScrollRect m_ScrollRect;
         [SerializeField]
         private RectTransform m_Deco;

@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using TP.VisualNovel;
 using TP.UI;
 using System;
+using TP.Data;
 
 public class dialogueTest : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class dialogueTest : MonoBehaviour
 
         IEnumerator Test() {
             yield return new WaitForEndOfFrame();
+            Global_EventSystem.VisualNovel.CallOnGameStateChanged(true);
 
             TP.Sound.Global_SoundManager.PlayBGM(TP.Sound.SoundID.bgm01, TP.Sound.Global_SoundManager.SoundOption.FadeIn | TP.Sound.Global_SoundManager.SoundOption.Loop);
 
@@ -27,6 +29,31 @@ public class dialogueTest : MonoBehaviour
             bool isComplete = false;
 
             Global_EventSystem.UI.Call<string, UnityAction, bool>(UIEventID.World_이펙트UI타이틀생성, "테스트 타이틀입니다.", () => isComplete = true, true);
+            yield return new WaitUntil(() => isComplete);
+            isComplete = false;
+            Global_EventSystem.UI.Call<TPSelectionData[]>(UIEventID.World_선택지UI생성, new TPSelectionData[] {
+                new TPSelectionData("선택지1", () =>
+                {
+                    Debug.Log("선택지1을 골랐습니다");
+                    isComplete = true;
+                }),
+                new TPSelectionData("선택지2", () =>
+                {
+                    Debug.Log("선택지2을 골랐습니다");
+                    isComplete = true;
+                }),
+                new TPSelectionData("선택지3", () =>
+                {
+                    Debug.Log("선택지3을 골랐습니다");
+                    isComplete = true;
+                }),
+                new TPSelectionData("선택지4", () =>
+                {
+                    Debug.Log("선택지4을 골랐습니다");
+                    isComplete = true;
+                }),
+            });
+
             yield return new WaitUntil(() => isComplete);
             isComplete = false;
             Global_EventSystem.UI.Call<string, UnityAction>(TP.UI.UIEventID.World_대화UI내용설정, test, () => isComplete = true);

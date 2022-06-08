@@ -45,8 +45,9 @@ namespace TP.UI {
             else {
                 if (Data.Global_LocalData.Save.Check(m_slot)) {
                     Debug.Log($"{m_slot}번 세이브 파일 로드");
+                    Sound.Global_SoundManager.StopAll();
                     Data.Global_LocalData.Save.Load(m_slot);
-                    Scene.Global_SceneManager.LoadScene(Scene.SceneID.Title);
+                    Scene.Global_SceneManager.LoadSceneAsync(Scene.SceneID.World);
                 }
             }
         }

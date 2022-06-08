@@ -115,7 +115,7 @@ namespace TP.UI {
 
             if (isClear) {
                 anchor_Text.anchoredPosition = new Vector2(0, 0);   // ¾ÞÄ¿ ÃÊ±âÈ­
-                for (int i = anchor_Text.childCount - 1; i >= 0; ++i) {
+                for (int i = anchor_Text.childCount - 1; i >= 0; --i) {
                     Destroy(anchor_Text.GetChild(i).gameObject);
                 }
                 m_lineStack.Clear();

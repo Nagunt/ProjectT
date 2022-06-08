@@ -1,8 +1,10 @@
+using System.Collections.ObjectModel;
 using UnityEngine;
+using TP.Data;
 
 namespace TP.VisualNovel {
 
-    public class SpriteLoader : MonoBehaviour {
-        [SerializeField] private SerializableDictionary<SpriteID, Sprite> m_SpriteData;
+    public class SpriteLoader : Global_DataLoader<SpriteID, Sprite> {
+        
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using TMPro;
 using TP.VisualNovel;
 using UnityEngine;
@@ -29,7 +30,7 @@ namespace TP.UI {
         private int cursor = 1;
         private List<int> buttonIndex;
         private Vector2 aspectRatio = new Vector2(7, 9);
-        private IReadOnlyDictionary<CharacterID, CharacterData> charData;
+        private ReadOnlyDictionary<CharacterID, CharacterData> charData;
 
         protected override void Start() {
             image_Profile.rectTransform.SetShapeWithCurrentAspectRatio(aspectRatio);
@@ -118,7 +119,7 @@ namespace TP.UI {
             }
         }
 
-        public void SetData(IReadOnlyDictionary<CharacterID, CharacterData> data)
+        public void SetData(ReadOnlyDictionary<CharacterID, CharacterData> data)
         {
             charData = data;
         }

@@ -44,6 +44,7 @@ namespace TP.UI {
                     image_Character[index].sprite = sprite;
                     image_Character[index].gameObject.SetActive(true);
                 }
+                SortSprite();
             }
         }
 
