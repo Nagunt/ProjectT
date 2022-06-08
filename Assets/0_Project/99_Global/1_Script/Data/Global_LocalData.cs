@@ -5,8 +5,11 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace TP.Data {
+
+    [System.Serializable]
     public struct TPLogData {
         public string name;
         public string content;
@@ -214,8 +217,8 @@ namespace TP.Data {
                     return current;
                 }
             }
-            public static bool Check(int _slot) {
-                return File.Exists(Application.persistentDataPath + $"/Save/save_{_slot}.TIGER");
+            public static bool Check(int slot) {
+                return File.Exists(Application.persistentDataPath + $"/Save/save_{slot}.TIGER");
             }
             public static void Load(int slot) {
                 Load(slot, out current);
@@ -223,13 +226,22 @@ namespace TP.Data {
             public static void Load(int slot, out SaveData data) {
                 string path = Application.persistentDataPath + $"/Save/save_{slot}.TIGER";
                 if (File.Exists(path)) {
-                    BinaryFormatter binaryFormatter = new BinaryFormatter();
                     FileStream fStream = new FileStream(path, FileMode.Open);
+                    try
+                    {
+                        BinaryFormatter binaryFormatter = new BinaryFormatter();
+                        SaveData saveData = binaryFormatter.Deserialize(fStream) as SaveData;
+                        fStream.Close();
 
-                    SaveData saveData = binaryFormatter.Deserialize(fStream) as SaveData;
-                    fStream.Close();
-
-                    data = saveData;
+                        data = saveData;
+                    }
+                    catch (Exception)
+                    {
+                        Debug.Log("세이브 파일 손상");
+                        fStream.Close();
+                        File.Delete(path);
+                        data = new SaveData();
+                    }
                 }
                 else {
                     Debug.Log("File not Exist");
@@ -248,6 +260,8 @@ namespace TP.Data {
                     File.Delete(path);
                 }
             }
+
+            [System.Serializable]
             public class SaveData {
                 public int cursor;
                 public FlagID flag;
@@ -257,18 +271,7 @@ namespace TP.Data {
                 public byte[] thumbnailData;
                 //public MyAudioData[] audioData;
                 //public MySpriteData[] spriteData;
-
-                [System.NonSerialized]
-                private Queue<TPLogData> tpLogData;
-
-                public IReadOnlyCollection<TPLogData> TPLogData {
-                    get {
-                        if (tpLogData == null) {
-                            tpLogData = new Queue<TPLogData>(15);
-                        }
-                        return tpLogData.ToList();
-                    }
-                }
+                public TPLogData lastLogData;
 
                 [System.NonSerialized]
                 private Texture2D thumbnail;
@@ -292,21 +295,118 @@ namespace TP.Data {
                     thumbnailData = null;
                     //audioData = null;
                     //spriteData = null;
-                    tpLogData = null;
+                    lastLogData = default;
                 }
-                public void Save(int _slot) {
+
+                public void Save(int slot) {
+
+                    Current.realTime = System.DateTime.Now.ToString("yyyy.MM.dd HH:mm");
+                    //Current.audioData = MyAudioManager.Instance.ToData();
+                    //Current.spriteData = MySpriteManager.Instance.ToData();
+
+                    Camera mainCamera = Camera.main;
+
+                    mainCamera.cullingMask = ~(1 << LayerMask.NameToLayer("UI"));
+
+                    RenderTexture renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
+                    mainCamera.targetTexture = renderTexture;
+
+                    Texture2D screenShot = new Texture2D((int)mainCamera.pixelRect.width, (int)mainCamera.pixelRect.height, TextureFormat.RGBA32, false);
+
+                    mainCamera.Render();
+                    RenderTexture.active = renderTexture;
+
+                    screenShot.ReadPixels(mainCamera.pixelRect, 0, 0);
+
+                    mainCamera.targetTexture = null;
+                    RenderTexture.active = null;
+                    mainCamera.cullingMask |= (1 << LayerMask.NameToLayer("UI"));
+
+                    MonoBehaviour.Destroy(renderTexture);
+
+                    Current.SetThumbnail(ResizeTexture(screenShot, mainCamera.pixelRect.size * .1f).EncodeToPNG()); // 일단 용량 최적화를 위해서 줄이기는 하는데......
+
                     BinaryFormatter binaryFormatter = new BinaryFormatter();
                     string path = Application.persistentDataPath + "/Save";
+                    Debug.Log(path);
                     Directory.CreateDirectory(path);
-                    FileStream fStream = new FileStream(path + $"/save_{_slot}.TIGER", FileMode.Create);
+                    FileStream fStream = new FileStream(path + $"/save_{slot}.TIGER", FileMode.Create);
                     binaryFormatter.Serialize(fStream, this);
                     fStream.Close();
+
+                    Texture2D ResizeTexture(Texture2D source, Vector2 size)
+                    {
+                        //*** Get All the source pixels
+                        Color[] aSourceColor = source.GetPixels(0);
+                        Vector2 vSourceSize = new Vector2(source.width, source.height);
+
+                        //*** Calculate New Size
+                        int xWidth = (int)size.x;
+                        int xHeight = (int)size.y;
+
+                        //*** Make New
+                        Texture2D oNewTex = new Texture2D(xWidth, xHeight, TextureFormat.RGBA32, false);
+
+                        //*** Make destination array
+                        int xLength = xWidth * xHeight;
+                        Color[] aColor = new Color[xLength];
+
+                        Vector2 vPixelSize = new Vector2(vSourceSize.x / xWidth, vSourceSize.y / xHeight);
+
+                        //*** Loop through destination pixels and process
+                        Vector2 vCenter = new Vector2();
+                        for (int ii = 0; ii < xLength; ii++)
+                        {
+                            //*** Figure out x&y
+                            float xX = (float)ii % xWidth;
+                            float xY = Mathf.Floor((float)ii / xWidth);
+
+                            //*** Calculate Center
+                            vCenter.x = (xX / xWidth) * vSourceSize.x;
+                            vCenter.y = (xY / xHeight) * vSourceSize.y;
+
+                            //*** Average
+                            //*** Calculate grid around point
+                            int xXFrom = (int)Mathf.Max(Mathf.Floor(vCenter.x - (vPixelSize.x * 0.5f)), 0);
+                            int xXTo = (int)Mathf.Min(Mathf.Ceil(vCenter.x + (vPixelSize.x * 0.5f)), vSourceSize.x);
+                            int xYFrom = (int)Mathf.Max(Mathf.Floor(vCenter.y - (vPixelSize.y * 0.5f)), 0);
+                            int xYTo = (int)Mathf.Min(Mathf.Ceil(vCenter.y + (vPixelSize.y * 0.5f)), vSourceSize.y);
+
+                            //*** Loop and accumulate
+                            //Vector4 oColorTotal = new Vector4();
+                            Color oColorTemp = new Color();
+                            float xGridCount = 0;
+                            for (int iy = xYFrom; iy < xYTo; iy++)
+                            {
+                                for (int ix = xXFrom; ix < xXTo; ix++)
+                                {
+
+                                    //*** Get Color
+                                    oColorTemp += aSourceColor[(int)(((float)iy * vSourceSize.x) + ix)];
+
+                                    //*** Sum
+                                    xGridCount++;
+                                }
+                            }
+
+                            //*** Average Color
+                            aColor[ii] = oColorTemp / (float)xGridCount;
+                        }
+
+                        //*** Set Pixels
+                        oNewTex.SetPixels(aColor);
+                        oNewTex.Apply();
+
+                        //*** Return
+                        return oNewTex;
+                    }
+
                 }
-                public void QuickSave(int _slot) {
+                public void QuickSave(int slot) {
                     BinaryFormatter binaryFormatter = new BinaryFormatter();
                     string path = Application.persistentDataPath + "/Save";
                     Directory.CreateDirectory(path);
-                    FileStream fStream = new FileStream(path + $"/save_{_slot}.TIGER", FileMode.Create);
+                    FileStream fStream = new FileStream(path + $"/save_{slot}.TIGER", FileMode.Create);
 
                     // 퀵세이브에 필요하지 않은 요소들은 제거
                     realTime = string.Empty;
@@ -316,23 +416,12 @@ namespace TP.Data {
                     binaryFormatter.Serialize(fStream, this);
                     fStream.Close();
                 }
-                public void SetThumbnail(byte[] _data) {
-                    thumbnailData = _data;
+                public void SetThumbnail(byte[] data) {
+                    thumbnailData = data;
                     thumbnail = new Texture2D(2, 2);
                     thumbnail.LoadImage(thumbnailData);
                 }
 
-                public void AddTPLogData(TPLogData data) {
-                    if (tpLogData == null) {
-                        tpLogData = new Queue<TPLogData>(15);
-                    }
-                    if (tpLogData.Count > 15) {
-                        for (int i = tpLogData.Count; i >= 15; --i) {
-                            tpLogData.Dequeue();
-                        }
-                    }
-                    tpLogData.Enqueue(data);
-                }
             }
         }
     }

@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using TP.Data;
@@ -14,6 +15,8 @@ namespace TP.VisualNovel {
 
         [SerializeField]
         private BackgroundLoader backgroundLoader;
+        [SerializeField]
+        private SpriteLoader spriteLoader;
         [SerializeField]
         private CharacterLoader characterLoader;
 
@@ -68,13 +71,21 @@ namespace TP.VisualNovel {
             // 콜백 등록
             Event.Global_EventSystem.VisualNovel.onScreenTouched += OnClick;
             Event.Global_EventSystem.VisualNovel.onSkipStateChanged += OnSkipStateChanged;
-            Event.Global_EventSystem.VisualNovel.onGameStateChanged -= OnGameStateChanged;
+            Event.Global_EventSystem.VisualNovel.onGameStateChanged += OnGameStateChanged;
             Event.Global_EventSystem.UI.Register(UI.UIEventID.Global_설정UIClose, OnSpeedValueChanged);
 
             Event.Global_EventSystem.VisualNovel.CallOnGameStateChanged(true);
             Event.Global_EventSystem.VisualNovel.CallOnSkipStateChanged(false);
 
             // 데이터 로드
+            if (Current.lastLogData.Check())
+            {
+                Event.Global_EventSystem.VisualNovel.CallOnLogDataAdded(Current.lastLogData);
+                Event.Global_EventSystem.UI.Call(UI.UIEventID.World_대화UI이름설정, Current.lastLogData.name);
+                Event.Global_EventSystem.UI.Call<string, UnityAction>(UI.UIEventID.World_대화UI내용갱신, Current.lastLogData.content, null);
+            }
+
+            Event.Global_EventSystem.UI.Call(UI.UIEventID.World_도감UI데이터설정, characterLoader.ToDictionary());
 
             string id = "_id";
             string name = "name";
@@ -122,14 +133,17 @@ namespace TP.VisualNovel {
                 string contentText = currentData[sentence].ToString().Replace("\"\"", "\"");
 
                 if (isClearDialogue) {
+                    TPLogData newLogData = new Data.TPLogData(nameText, contentText);
+                    Current.lastLogData = newLogData;
                     Event.Global_EventSystem.UI.Call(UI.UIEventID.World_대화UI이름설정, nameText);
-                    //Current.lastLogData = default;
-                    Data.Global_LocalData.Save.Current.AddTPLogData(new Data.TPLogData(nameText, contentText));
+                    Event.Global_EventSystem.VisualNovel.CallOnLogDataAdded(newLogData);
                 }
                 else {
-                    //MyLogData lastLogData = ui_Dialogue.GetLogData();
-                    //Current.lastLogData = lastLogData;
-                    //ui_Log.ModifyLastLogData(new MyLogData(lastLogData.name, lastLogData.content + contentText));
+                    TPLogData lastLogData = Current.lastLogData;
+                    lastLogData.content += contentText;
+                    Current.lastLogData = lastLogData;
+                    Event.Global_EventSystem.UI.Call(UI.UIEventID.World_대화UI이름설정, lastLogData.name);
+                    Event.Global_EventSystem.VisualNovel.CallOnLogDataModified(lastLogData);
                 }
 
                 if (string.IsNullOrEmpty(contentText) == false) {
@@ -247,6 +261,15 @@ namespace TP.VisualNovel {
 
         public void Jump(float index) {
             Current.cursor = (int)index;
+            Event.Global_EventSystem.VisualNovel.CallOnCommandEnd();
+        }
+
+        public void UnlockBook(params float[] index)
+        {
+            for (int i = 0; i < index.Length; ++i)
+            {
+                Current.book |= (BookID)Enum.GetValues(typeof(BookID)).GetValue((int)index[i]);
+            }
             Event.Global_EventSystem.VisualNovel.CallOnCommandEnd();
         }
 

@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using TP.UI;
 using TP.Sound;
+using TP.Data;
 
 namespace TP.Event {
     public static class Global_EventSystem {
@@ -26,7 +27,7 @@ namespace TP.Event {
 
             public static void Init() {
                 SceneManager.activeSceneChanged += (a, b) => {
-                    Debug.Log($"ActiveSceneChanged 호출 : {a} => {b}");
+                    Debug.Log($"ActiveSceneChanged 호출 : {a.name} => {b.name}");
                 };
             }
         }
@@ -62,11 +63,14 @@ namespace TP.Event {
 
             public delegate void VoidEvent();
             public delegate void BoolEvent(bool state);
+            public delegate void LogEvent(TPLogData data);
 
             public static VoidEvent onCommandEnd;
             public static VoidEvent onScreenTouched;
             public static BoolEvent onSkipStateChanged;
             public static BoolEvent onGameStateChanged;
+            public static LogEvent onLogDataAdded;
+            public static LogEvent onLogDataModified;
 
             public static bool Skip { get; private set; }
             public static bool GameState { get; private set; }
@@ -79,6 +83,16 @@ namespace TP.Event {
                 onScreenTouched?.Invoke();
             }
 
+            public static void CallOnLogDataAdded(TPLogData data)
+            {
+                onLogDataAdded?.Invoke(data);
+            }
+
+            public static void CallOnLogDataModified(TPLogData data)
+            {
+                onLogDataModified?.Invoke(data);
+            }
+
             public static void CallOnSkipStateChanged(bool state) {
                 Skip = state;
                 onSkipStateChanged?.Invoke(state);
@@ -86,6 +100,7 @@ namespace TP.Event {
 
             public static void CallOnGameStateChanged(bool state) {
                 GameState = state;
+                Time.timeScale = GameState ? 1f : 0;
                 onGameStateChanged?.Invoke(state);
             }
         }
@@ -95,6 +110,7 @@ namespace TP.Event {
             public delegate void UIEvent_0차원();
             public delegate void UIEvent_1차원<T>(T t);
             public delegate void UIEvent_2차원<T, K>(T t, K k);
+            public delegate void UIEvent_3차원<T, K, L>(T t, K k, L l);
 
             private class UIEvent {
                 public UIEvent_0차원 callback;
@@ -107,16 +123,23 @@ namespace TP.Event {
                 public new UIEvent_2차원<T, K> callback;
             }
 
+            private class UIEvent<T, K, L> : UIEvent
+            {
+                public new UIEvent_3차원<T, K, L> callback;
+            }
+
             private static Dictionary<UIEventID, UIEvent> localUIEvent_0;
             private static Dictionary<UIEventID, UIEvent> localUIEvent_1;
             private static Dictionary<UIEventID, UIEvent> localUIEvent_2;
+            private static Dictionary<UIEventID, UIEvent> localUIEvent_3;
 
 
             private static Dictionary<UIEventID, UIEvent> globalUIEvent_0;
             private static Dictionary<UIEventID, UIEvent> globalUIEvent_1;
             private static Dictionary<UIEventID, UIEvent> globalUIEvent_2;
+            private static Dictionary<UIEventID, UIEvent> globalUIEvent_3;
 
-            
+
 
             public static void Call(UIEventID id) {
                 Dictionary<UIEventID, UIEvent> targetDictionary;
@@ -149,6 +172,20 @@ namespace TP.Event {
                 targetDictionary = localUIEvent_2;
                 if (targetDictionary.TryGetValue(id, out UIEvent value2)) {
                     (value2 as UIEvent<T, K>).callback?.Invoke(t, k);
+                }
+            }
+            public static void Call<T, K, L>(UIEventID id, T t, K k, L l)
+            {
+                Dictionary<UIEventID, UIEvent> targetDictionary;
+                targetDictionary = globalUIEvent_3;
+                if (targetDictionary.TryGetValue(id, out UIEvent value))
+                {
+                    (value as UIEvent<T, K, L>).callback?.Invoke(t, k, l);
+                }
+                targetDictionary = localUIEvent_3;
+                if (targetDictionary.TryGetValue(id, out UIEvent value2))
+                {
+                    (value2 as UIEvent<T, K, L>).callback?.Invoke(t, k, l);
                 }
             }
 
@@ -209,19 +246,46 @@ namespace TP.Event {
                     targetDictionary.Add(id, newEvent);
                 }
             }
+            public static void Register<T, K, L>(UIEventID id, UIEvent_3차원<T, K, L> action, bool isGlobal = false)
+            {
+                Dictionary<UIEventID, UIEvent> targetDictionary;
+
+                if (isGlobal)
+                {
+                    targetDictionary = globalUIEvent_3;
+                }
+                else
+                {
+                    targetDictionary = localUIEvent_3;
+                }
+
+                if (targetDictionary.TryGetValue(id, out UIEvent value))
+                {
+                    (value as UIEvent<T, K, L>).callback += action;
+                }
+                else
+                {
+                    UIEvent<T, K, L> newEvent = new UIEvent<T, K, L>();
+                    newEvent.callback += action;
+                    targetDictionary.Add(id, newEvent);
+                }
+            }
 
             public static void Init() {
                 localUIEvent_0 = new Dictionary<UIEventID, UIEvent>();
                 localUIEvent_1 = new Dictionary<UIEventID, UIEvent>();
                 localUIEvent_2 = new Dictionary<UIEventID, UIEvent>();
+                localUIEvent_3 = new Dictionary<UIEventID, UIEvent>();
                 globalUIEvent_0 = new Dictionary<UIEventID, UIEvent>();
                 globalUIEvent_1 = new Dictionary<UIEventID, UIEvent>();
                 globalUIEvent_2 = new Dictionary<UIEventID, UIEvent>();
+                globalUIEvent_3 = new Dictionary<UIEventID, UIEvent>();
 
                 Scene.onSceneChanged += (current, next) => {
                     localUIEvent_0.Clear();
                     localUIEvent_1.Clear();
                     localUIEvent_2.Clear();
+                    localUIEvent_3.Clear();
                 };
             }
         }

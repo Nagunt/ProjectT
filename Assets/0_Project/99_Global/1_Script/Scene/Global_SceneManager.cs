@@ -63,7 +63,11 @@ namespace TP.Scene {
             Global_EventSystem.UI.Call(UIEventID.Global_로딩UIOpen);
             string currentScene = SceneManager.GetActiveScene().name;
 
+            Debug.Log("현재 씬은 " + currentScene);
+
             yield return null;
+
+            Debug.Log("1프레임 대기");
 
             AsyncOperation operation = SceneManager.LoadSceneAsync(index);
             operation.allowSceneActivation = false;

@@ -255,7 +255,8 @@ namespace TP.Sound {
                     }).
                     OnKill(() => {
                         m_instance.m_tweeners.Remove(channel);
-                    });
+                    }).
+                    Play();
             }
             else {
                 newAudio.volume = volume;
@@ -288,7 +289,8 @@ namespace TP.Sound {
                         OnKill(() => {
                             m_instance.m_tweeners.Remove(id);
                             audioObject.Pause();
-                        });
+                        }).
+                        Play();
                 }
                 else {
                     audioObject.Pause();
@@ -318,7 +320,8 @@ namespace TP.Sound {
                         }).
                         OnKill(() => {
                             m_instance.m_tweeners.Remove(id);
-                        });
+                        }).
+                        Play();
                     return;
                 }
                 else {
@@ -347,7 +350,8 @@ namespace TP.Sound {
                         OnKill(() => {
                             m_instance.m_tweeners.Remove(id);
                             audioObject.Complete();
-                        });
+                        }).
+                        Play();
                 }
                 else {
                     audioObject.Complete();

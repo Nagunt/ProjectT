@@ -26,7 +26,6 @@ namespace TP {
 
             float width = area.rect.size.x;
             float height = area.rect.size.y;
-            Debug.Log($"{area.name} : width = {width}, height = {height}");
             float targetWidth = width * aspectRatio.y > height * aspectRatio.x ? height * (aspectRatio.x / aspectRatio.y) : width;
             float targetHeight = height * aspectRatio.x > width * aspectRatio.y ? width * (aspectRatio.y / aspectRatio.x) : height;
 

@@ -30,7 +30,7 @@ namespace TP.UI {
         World_대화UI직책설정,
         World_대화UI내용설정,
         World_대화UI내용수정,
-        World_대화UI스킵,
+        World_대화UI내용갱신,
 
         World_비주얼노벨UI배경설정,
         World_비주얼노벨UI필터설정,
@@ -41,6 +41,10 @@ namespace TP.UI {
 
         World_도감UIOpen,
         World_도감UIClose,
+        World_도감UI데이터설정,
+        World_도감UI인덱스설정,
+
+        World_이펙트UI타이틀생성,
 
         World_정지메뉴UIOpen,
         World_정지메뉴UIClose,

@@ -12,6 +12,7 @@ namespace TP.UI {
             Event.Global_EventSystem.UI.Register<string>(UIEventID.World_대화UI직책설정, SetText_Position);
             Event.Global_EventSystem.UI.Register<string, UnityAction>(UIEventID.World_대화UI내용설정, SetText_Dialogue);
             Event.Global_EventSystem.UI.Register<string, UnityAction>(UIEventID.World_대화UI내용수정, ModifyText_Dialogue);
+            Event.Global_EventSystem.UI.Register<string, UnityAction>(UIEventID.World_대화UI내용갱신, RefreshText_Dialogue);
         }
 
         private void SetText_Name(string value) {
@@ -28,13 +29,21 @@ namespace TP.UI {
 
         private void SetText_Dialogue(string value, UnityAction callback) {
             if(_uiObject != null) {
-                _uiObject.SetText_Dialogue(value, true, callback);
+                _uiObject.SetText_Dialogue(value, true, false, callback);
             }
         }
 
         private void ModifyText_Dialogue(string value, UnityAction callback) {
             if (_uiObject != null) {
-                _uiObject.SetText_Dialogue(value, false, callback);
+                _uiObject.SetText_Dialogue(value, false, false, callback);
+            }
+        }
+
+        private void RefreshText_Dialogue(string value, UnityAction callback)
+        {
+            if (_uiObject != null)
+            {
+                _uiObject.SetText_Dialogue(value, true, true, callback);
             }
         }
 

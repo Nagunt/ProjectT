@@ -100,9 +100,7 @@ namespace TP.UI {
             text_Name.SetText(value);
         }
 
-        public void SetText_Dialogue(string value, bool isClear, UnityAction callback) {
-            
-
+        public void SetText_Dialogue(string value, bool isClear, bool isRefresh, UnityAction callback) {
             TPTextStyle style = default;
             Stack<TPTextStyle> styleStack = new Stack<TPTextStyle>();
             Stack<Color> colorStack = new Stack<Color>();
@@ -415,7 +413,8 @@ namespace TP.UI {
             }
 
             IEnumerator EffectRoutine(List<SubUI_Line> lineData) {
-                if (isSkip == false) {
+                if (isSkip == false &&
+                    isRefresh == false) {
                     isTyping = true;
                     bool isComplete = false;
                     Tweener lineEffect = null;
@@ -455,11 +454,13 @@ namespace TP.UI {
                     anchor_Text.anchoredPosition = new Vector2(anchor_Text.anchoredPosition.x, m_lineHeight * (lineData.Count - m_lineCount + prevLineCount));
                 }
 
-                cursor = Instantiate(subUI_Cursor, anchor_Text).
-                    SetHeight(m_lineHeight).
-                    SetPosition(new Vector2(lineData.Last().Width, -(lineData.Count + prevLineCount - 1) * m_lineHeight)).
-                    Play();
-
+                if (isRefresh == false)
+                {
+                    cursor = Instantiate(subUI_Cursor, anchor_Text).
+                        SetHeight(m_lineHeight).
+                        SetPosition(new Vector2(lineData.Last().Width, -(lineData.Count + prevLineCount - 1) * m_lineHeight)).
+                        Play();
+                }
                 callback?.Invoke();
             }
         }

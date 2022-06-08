@@ -16,11 +16,12 @@ namespace TP.UI {
         [SerializeField]
         private SubUI_Log subUI_Log;
 
+        private IReadOnlyCollection<TPLogData> m_LogData;
+
         protected override void Start() {
-            var logData = Global_LocalData.Save.Current.TPLogData;
             m_ScrollRect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0);
 
-            foreach (TPLogData currentData in logData) {
+            foreach (TPLogData currentData in m_LogData) {
                 SubUI_Log newLog = Instantiate(subUI_Log, m_ScrollRect.content);
                 newLog.Init(currentData.name, currentData.content);
                 newLog.RectTransform.anchoredPosition = new Vector2(0, -m_ScrollRect.content.rect.height);
@@ -36,11 +37,18 @@ namespace TP.UI {
 
             m_Deco.offsetMin = new Vector2(m_Deco.offsetMin.x, Mathf.Max(0, m_ScrollRect.viewport.rect.height - m_ScrollRect.content.rect.height));
 
-            if(m_ScrollRect.viewport.rect.height > m_ScrollRect.content.rect.height) {
+            if (m_ScrollRect.viewport.rect.height > m_ScrollRect.content.rect.height)
+            {
                 m_ScrollRect.verticalScrollbar.gameObject.SetActive(false);
                 m_ScrollRect.verticalScrollbar = null;
             }
         }
+
+        public void SetLogData(IReadOnlyCollection<TPLogData> logData)
+        {
+            m_LogData = logData;
+        }
+
     }
 }
 

@@ -1,8 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace TP.VisualNovel {
+namespace TP.VisualNovel
+{
+    public class CharacterLoader : Global_DataLoader<CharacterID, CharacterData>
+    {
 
-    public class CharacterLoader : MonoBehaviour {
-        [SerializeField] private SerializableDictionary<CharacterID, Sprite> m_CharacterData;
     }
 }

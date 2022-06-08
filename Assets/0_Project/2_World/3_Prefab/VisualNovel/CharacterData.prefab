@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6255011263491725060
+--- !u!1 &2554240664955095970
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6255011263491725062}
-  - component: {fileID: 6255011263491725061}
+  - component: {fileID: 7980569361620477028}
+  - component: {fileID: 27336651292301759}
   m_Layer: 0
   m_Name: CharacterData
   m_TagString: Untagged
@@ -17,13 +17,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6255011263491725062
+--- !u!4 &7980569361620477028
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6255011263491725060}
+  m_GameObject: {fileID: 2554240664955095970}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,89 +31,80 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6255011263491725061
+--- !u!114 &27336651292301759
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6255011263491725060}
+  m_GameObject: {fileID: 2554240664955095970}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91ff0d5ebb1f12e45890e89174ac81b1, type: 3}
+  m_Script: {fileID: 11500000, guid: d2ef7fdcb0de8c441ab76d5e990ef481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CharacterData:
-    array:
-    - Key: 1
-      Value: {fileID: 21300000, guid: 9f5d3de9dc070f040b989cab41f60b94, type: 3}
-    - Key: 2
-      Value: {fileID: 21300000, guid: d9934bb1ab6a2bb4d945131ca37e1468, type: 3}
-    - Key: 3
-      Value: {fileID: 21300000, guid: a550cded2fb463a49985d75cffac70e4, type: 3}
-    - Key: 4
-      Value: {fileID: 21300000, guid: e4fa90c6108a6404080ce519e75ee83a, type: 3}
-    - Key: 5
-      Value: {fileID: 21300000, guid: 29306a3fd5e5d77409b13322d039af24, type: 3}
-    - Key: 6
-      Value: {fileID: 21300000, guid: bdf4ab1d19c79494ea0518356d4b01e7, type: 3}
-    - Key: 7
-      Value: {fileID: 21300000, guid: 33c77f5c9c529e245b80e50fb736953e, type: 3}
-    - Key: 8
-      Value: {fileID: 21300000, guid: f2aec1a556a22654b8633e3fa64a2eb0, type: 3}
-    - Key: 9
-      Value: {fileID: 21300000, guid: c39ec3d837409604fabb9aae33ee9792, type: 3}
-    - Key: 10
-      Value: {fileID: 21300000, guid: 4baf2cdbca026d54093f9dbbd77599dc, type: 3}
-    - Key: 11
-      Value: {fileID: 21300000, guid: 1f4f9d8135fe8cf4884aa8db0a70c4fe, type: 3}
-    - Key: 12
-      Value: {fileID: 21300000, guid: aac21533aee5abb4d8ac4e2cc586350b, type: 3}
-    - Key: 13
-      Value: {fileID: 21300000, guid: 4055fa1fe508647448349f18cac99324, type: 3}
-    - Key: 14
-      Value: {fileID: 21300000, guid: bb3846951b0b1e14b9fc17dbec44be4f, type: 3}
-    - Key: 15
-      Value: {fileID: 21300000, guid: c45946342c7026147aef7983dd609ec0, type: 3}
-    - Key: 16
-      Value: {fileID: 21300000, guid: d77c7b82fdf26564480ca7bbceda1933, type: 3}
-    - Key: 17
-      Value: {fileID: 21300000, guid: ee9e03b25e4e94c4a9ddb68c75866757, type: 3}
-    - Key: 18
-      Value: {fileID: 21300000, guid: b97685e49e11e1a4693d9fff6da4bb8b, type: 3}
-    - Key: 19
-      Value: {fileID: 21300000, guid: dd36d76b35baf7a4683f49db9078b849, type: 3}
-    - Key: 20
-      Value: {fileID: 21300000, guid: 316022b774313934ab859f6baf2be347, type: 3}
-    - Key: 21
-      Value: {fileID: 21300000, guid: 261bcf060588e654cac017244e8eb547, type: 3}
-    - Key: 22
-      Value: {fileID: 21300000, guid: a2c2fbb5ff773ff49bdbb2260bb73cab, type: 3}
-    - Key: 23
-      Value: {fileID: 21300000, guid: 8a96aecd239d231449c76f5dce9005b9, type: 3}
-    - Key: 24
-      Value: {fileID: 21300000, guid: 2cd6f3a476beb8f458bb8292d6de8e14, type: 3}
-    - Key: 25
-      Value: {fileID: 21300000, guid: 52787556e4012234d8fa9643587ef55d, type: 3}
-    - Key: 26
-      Value: {fileID: 21300000, guid: 157400a8f9712f247bc98bbe7e0edfe9, type: 3}
-    - Key: 27
-      Value: {fileID: 21300000, guid: 143df27065e252f4bb9b374fc3116fc6, type: 3}
-    - Key: 28
-      Value: {fileID: 21300000, guid: af8596a28f8d5804fb1b27c86e90385a, type: 3}
-    - Key: 29
-      Value: {fileID: 21300000, guid: 62b6696cacaa2424e87c858651f2ea41, type: 3}
-    - Key: 30
-      Value: {fileID: 21300000, guid: 1b19702b08bc64e4ab43b06b8c095426, type: 3}
-    - Key: 31
-      Value: {fileID: 21300000, guid: 86581573277ae8a42aa8e71e75273e02, type: 3}
-    - Key: 32
-      Value: {fileID: 21300000, guid: 5c074297a77f05b47a96cdd7d62f6776, type: 3}
-    - Key: 33
-      Value: {fileID: 21300000, guid: ed1a49b1644660f4c83a53472e3c1d26, type: 3}
-    - Key: 34
-      Value: {fileID: 21300000, guid: 3da6e1b293a941d468e13e3a794388f9, type: 3}
-    - Key: 35
-      Value: {fileID: 21300000, guid: 294002e5547c06443bb64f35fe9b5ace, type: 3}
-    - Key: 36
-      Value: {fileID: 21300000, guid: ee47d53057dfe9845b3b9acfe2b235e8, type: 3}
+  m_data:
+  - key: 1
+    value:
+      name: "\uC18C\uB0D0 \uC774\uBC14\uB178\uBE0C\uB098"
+      where: "\uC18C\uB828\uAD70"
+      birth: 1919.08.13
+      placement: "\uC18C\uB828\uAD70 \uD3EC\uC218"
+      rank: {fileID: 21300000, guid: 581dd227cd39b994090d0c0b4e0e6f60, type: 3}
+      profile: {fileID: 21300000, guid: b69ca5db7c5de5245981f5cc9dbc8017, type: 3}
+  - key: 2
+    value:
+      name: "\uBBF8\uD558\uC77C \uC54C\uB809\uC0B0\uB4DC\uB85C\uBE44\uCE58"
+      where: "\uC18C\uB828\uAD70"
+      birth: 1920.11.25
+      placement: "\uC18C\uB828\uAD70 \uC6B4\uC804\uC218"
+      rank: {fileID: 21300000, guid: bc0d5b35d484e10449a258032c8954f5, type: 3}
+      profile: {fileID: 21300000, guid: d48648d91e4050947a66828eaf745e98, type: 3}
+  - key: 3
+    value:
+      name: "\uC774\uB9AC\uB098 \uBC14\uC2E4\uB9AC\uC608\uBE0C\uB098"
+      where: "\uC18C\uB828\uAD70"
+      birth: 1923.01.31
+      placement: "\uC18C\uB828\uAD70 \uD0C4\uC57D\uC218"
+      rank: {fileID: 21300000, guid: bc0d5b35d484e10449a258032c8954f5, type: 3}
+      profile: {fileID: 21300000, guid: 0f5646930b0d55d408d94eb685197584, type: 3}
+  - key: 4
+    value:
+      name: "\uB808\uBCA0\uCE74 \uD638\uD504\uB9CC"
+      where: "\uC720\uB300\uC778"
+      birth: 1920.12.03
+      placement: "\uBBFC\uAC04\uC778"
+      rank: {fileID: 21300000, guid: a117256f6741aa54c832c6738c78595b, type: 3}
+      profile: {fileID: 21300000, guid: 3d88fd38807edb9458172831315e27a5, type: 3}
+  - key: 5
+    value:
+      name: "\uC544\uB378\uB77C\uC774\uB370 \uD3F0 \uC544\uC774\uC820\uBCA0\uB974\uD06C"
+      where: "\uB3C5\uC77C\uAD6D\uBC29\uAD70"
+      birth: 1915.03.28
+      placement: "\uB3C5\uC77C\uAD6D\uBC29\uAD70 \uC804\uCC28\uC7A5"
+      rank: {fileID: 21300000, guid: e3702f42df0625849908f8ecaf8b7d88, type: 3}
+      profile: {fileID: 21300000, guid: e3cd989fc1464e64cab1a5303dfac9ba, type: 3}
+  - key: 6
+    value:
+      name: "\uB2E4\uB2C8\uC5D8 \uC288\uBBF8\uD2B8"
+      where: "\uB3C5\uC77C\uAD6D\uBC29\uAD70"
+      birth: 1924.10.22
+      placement: "\uB3C5\uC77C\uAD6D\uBC29\uAD70 \uBB34\uC120\uBCD1"
+      rank: {fileID: 21300000, guid: 0fb87742121c15d4bb19a3b198a461c0, type: 3}
+      profile: {fileID: 21300000, guid: 6f8042beb789f0144a45b2f497cd2bc9, type: 3}
+  - key: 7
+    value:
+      name: "Dr. \uD504\uB780\uCE20"
+      where: "\uBB34\uC7A5\uCE5C\uC704\uB300"
+      birth: 1910.03.16
+      placement: "\uBB34\uC7A5\uCE5C\uC704\uB300 \uC804\uCC28\uC7A5"
+      rank: {fileID: 21300000, guid: bb99e6f958ae56c47b47ea267448ff86, type: 3}
+      profile: {fileID: 21300000, guid: 179dae03ab7db004fa86533979c35c6d, type: 3}
+  - key: 0
+    value:
+      name: 
+      where: 
+      birth: 
+      placement: 
+      rank: {fileID: 0}
+      profile: {fileID: 21300000, guid: d6f32749cbe26ab4caec27cfa1c06f25, type: 3}

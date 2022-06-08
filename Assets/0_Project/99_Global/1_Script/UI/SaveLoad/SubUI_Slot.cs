@@ -37,6 +37,7 @@ namespace TP.UI {
             if (isSave) {
                 // 여기서 저장하던지
                 Data.Global_LocalData.Save.SaveData saveData = Data.Global_LocalData.Save.Current;
+                saveData.Save(m_slot);
                 SetInfo(saveData.gameTime, saveData.realTime);
                 SetThumbnail(saveData.ThumbNail);
                 Canvas.ForceUpdateCanvases();
@@ -45,7 +46,7 @@ namespace TP.UI {
                 if (Data.Global_LocalData.Save.Check(m_slot)) {
                     Debug.Log($"{m_slot}번 세이브 파일 로드");
                     Data.Global_LocalData.Save.Load(m_slot);
-                    Scene.Global_SceneManager.LoadScene(Scene.SceneID.World);
+                    Scene.Global_SceneManager.LoadScene(Scene.SceneID.Title);
                 }
             }
         }

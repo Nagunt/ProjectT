@@ -11,6 +11,10 @@ namespace TP.UI {
             Event.Global_EventSystem.UI.Register(UIEventID.Global_저장UIClose, Close, true);
             Event.Global_EventSystem.UI.Register(UIEventID.Global_로드UIOpen, OpenUI_Load, true);
             Event.Global_EventSystem.UI.Register(UIEventID.Global_로드UIClose, Close, true);
+            Event.Global_EventSystem.Scene.onSceneChanged += (a, b) =>
+            {
+                Event.Global_EventSystem.UI.Call(UIEventID.Global_로드UIClose);
+            };
         }
 
         private void OpenUI_Save() {
