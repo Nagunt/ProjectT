@@ -26,6 +26,9 @@ namespace TP.UI {
         Global_로딩UIClose,
         Global_로딩UI진행도설정,
 
+        Title_제작진UIOpen,
+        Title_제작진UIClose,
+
         World_대화UI이름설정,
         World_대화UI직책설정,
         World_대화UI내용설정,

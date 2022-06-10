@@ -42,7 +42,7 @@ namespace TP.UI {
         }
 
         private void OnClick_Credit() {
-            Debug.Log("credit");
+            Event.Global_EventSystem.UI.Call(UIEventID.Title_¡¶¿€¡¯UIOpen);
         }
 
     }
