@@ -14,9 +14,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/0_Project/2_World/0_Scene/World.unity
     guid: 90e23288938fa114b9d016b3a4f5291b
-  - enabled: 1
-    path: Assets/0_Project/99_Global/0_Scene/Loading.unity
-    guid: 95b7abf09483edc4392cb790a20b13ef
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: a2c99eda6e4eae84ea6041cd1b6e0e41,
       type: 2}

@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using TP.UI;
 using TP.Sound;
 using TP.Data;
+using TP.Scene;
+using System;
 
 namespace TP.Event {
     public static class Global_EventSystem {
@@ -16,18 +18,22 @@ namespace TP.Event {
 
         public static class Scene {
 
-            public delegate void OnSceneChangedByName(string current, string next);
+            public delegate void OnSceneChangedByID(SceneID current, SceneID next);
 
-            public static OnSceneChangedByName onSceneChanged;
+            public static OnSceneChangedByID onSceneChanged;
+            public static SceneID Current { get; private set; }
 
-            public static void CallOnSceneChanged(string currentSceneName, string nextSceneName) {
-                Debug.Log($"SceneChanged 호출 : {currentSceneName} => {nextSceneName}");
-                onSceneChanged?.Invoke(currentSceneName, nextSceneName);
+            public static void CallOnSceneChanged(SceneID current, SceneID next) {
+                Debug.Log($"SceneChanged 호출 : {current} => {next}");
+                onSceneChanged?.Invoke(current, next);
             }
 
             public static void Init() {
+                Current = (SceneID)Enum.Parse(typeof(SceneID), SceneManager.GetActiveScene().name);
                 SceneManager.activeSceneChanged += (a, b) => {
-                    Debug.Log($"ActiveSceneChanged 호출 : {a.name} => {b.name}");
+                    SceneID nextScene = (SceneID)Enum.Parse(typeof(SceneID), b.name);
+                    CallOnSceneChanged(Current, nextScene);
+                    Current = nextScene;
                 };
             }
         }
@@ -64,7 +70,10 @@ namespace TP.Event {
             public delegate void VoidEvent();
             public delegate void BoolEvent(bool state);
             public delegate void LogEvent(TPLogData data);
+            public delegate void SaveEvent(Global_LocalData.Save.SaveData saveData);
 
+            public static SaveEvent onSave;
+            public static SaveEvent onLoad;
             public static VoidEvent onCommandEnd;
             public static VoidEvent onScreenTouched;
             public static BoolEvent onSkipStateChanged;
@@ -74,6 +83,14 @@ namespace TP.Event {
 
             public static bool Skip { get; private set; }
             public static bool GameState { get; private set; }
+
+            public static void CallOnSave(Global_LocalData.Save.SaveData saveData) {
+                onSave?.Invoke(saveData);
+            }
+
+            public static void CallOnLoad(Global_LocalData.Save.SaveData saveData) {
+                onLoad?.Invoke(saveData);
+            }
 
             public static void CallOnCommandEnd() {
                 onCommandEnd?.Invoke();

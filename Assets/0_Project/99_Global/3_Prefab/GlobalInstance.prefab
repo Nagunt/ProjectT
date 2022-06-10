@@ -281,9 +281,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20bf10fc4b7386346a95f7e51690c4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Keys: 
+  m_Values: []
   isLocal: 0
-  m_SoundData:
-    array: []
 --- !u!1 &6535039270588353180
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,7 +344,7 @@ GameObject:
   - component: {fileID: 4891871130694177362}
   - component: {fileID: 6558309816092262571}
   - component: {fileID: 8384639837977151581}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Canvas_Global
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,7 @@ Canvas:
   m_GameObject: {fileID: 6938275017426433072}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -392,7 +392,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 0
+  m_SortingLayerID: -178029809
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &4891871130694177362
@@ -417,7 +417,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!114 &6558309816092262571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,6 +447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RectTransform: {fileID: 2557755529635144517}
+  m_Canvas: {fileID: 7779691936876721955}
 --- !u!1 &7461440862483968802
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,7 +574,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!114 &5583769576319581321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -603,6 +602,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Layer_Loading
+      objectReference: {fileID: 0}
+    - target: {fileID: 512505959771963821, guid: e09eca21a03b2b84d9b927b9d68398f3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4146517765643934790, guid: e09eca21a03b2b84d9b927b9d68398f3,
         type: 3}
@@ -959,6 +963,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Layer_SaveLoad
       objectReference: {fileID: 0}
+    - target: {fileID: 7891404851887983555, guid: 362c84dd6b9f14b46912f71301d8c3f2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 362c84dd6b9f14b46912f71301d8c3f2, type: 3}
 --- !u!224 &8611426379715159602 stripped
@@ -978,6 +987,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Layer_Tooltip
+      objectReference: {fileID: 0}
+    - target: {fileID: 2526588384325036290, guid: ff603ee142afc50478c235d27e397e23,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8407079424129368347, guid: ff603ee142afc50478c235d27e397e23,
         type: 3}
@@ -1228,6 +1242,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Layer_Setting
+      objectReference: {fileID: 0}
+    - target: {fileID: 2098881791083374493, guid: 0b4cdeb9f1fbe4d42a139d9cb166717a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 9187548099743872542, guid: 0b4cdeb9f1fbe4d42a139d9cb166717a,
         type: 3}

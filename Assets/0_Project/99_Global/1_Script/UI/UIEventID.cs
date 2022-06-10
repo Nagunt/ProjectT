@@ -30,7 +30,6 @@ namespace TP.UI {
         World_대화UI직책설정,
         World_대화UI내용설정,
         World_대화UI내용수정,
-        World_대화UI내용갱신,
 
         World_비주얼노벨UI배경설정,
         World_비주얼노벨UI필터설정,
@@ -41,13 +40,13 @@ namespace TP.UI {
 
         World_도감UIOpen,
         World_도감UIClose,
-        World_도감UI데이터설정,
         World_도감UI인덱스설정,
 
         World_이펙트UI검은화면설정,
         World_이펙트UI검은화면해제,
 
         World_이펙트UI타이틀생성,
+        World_이펙트UI흔들림효과,
 
         World_선택지UI생성,
         World_선택지UI선택완료,

@@ -97,7 +97,7 @@ namespace TP.UI {
 
         public void SetText_Position(string value) {
             object_Position.SetActive(!string.IsNullOrEmpty(value));
-            text_Name.SetText(value);
+            text_Position.SetText(value);
         }
 
         public void SetText_Dialogue(string value, bool isClear, bool isRefresh, UnityAction callback) {
@@ -332,9 +332,8 @@ namespace TP.UI {
                     MakeWord(content, GetStyle());
                 }
 
-                void MakeWord(string data, TPTextStyle style) {
+                void MakeWord(string data, TPTextStyle wordStyle) {
                     string wordData = data;
-                    TPTextStyle wordStyle = style;
                     m_calcWord.SetText(wordData).SetStyle(wordStyle);
                     SubUI_Line line = GetLine();
                     while (line.Width + m_calcWord.PreferredWidth >= m_lineWidth) {
@@ -387,9 +386,9 @@ namespace TP.UI {
                     content = string.Empty;
                 }
 
-                void AddContent(string value) {
-                    content += value;
-                    i += value.Length;
+                void AddContent(string data) {
+                    content += data;
+                    i += data.Length;
                 }
 
             }

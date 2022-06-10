@@ -27,14 +27,13 @@ namespace TP.Data {
 
     [System.Serializable]
     public struct TPSpriteData {
-        public string name;
+        public string imageKey;
         public float posX;
         public float posY;
         public float posZ;
         public float scaleX;
         public float scaleY;
         public float scaleZ;
-        public string imageKey;
         public float r;
         public float g;
         public float b;
@@ -246,6 +245,8 @@ namespace TP.Data {
                 All = int.MaxValue
             }
 
+            public const int SLOT_QUICKSAVE = 99;
+
             private static SaveData current;
             public static SaveData Current {
                 get {
@@ -308,7 +309,7 @@ namespace TP.Data {
                 public string realTime;
                 public byte[] thumbnailData;
                 public TPAudioData[] audioData;
-                //public MySpriteData[] spriteData;
+                public TPSpriteData[] spriteData;
                 public TPLogData lastLogData;
 
                 [System.NonSerialized]
@@ -332,16 +333,15 @@ namespace TP.Data {
                     thumbnail = null;
                     thumbnailData = null;
                     audioData = null;
-                    //spriteData = null;
+                    spriteData = null;
                     lastLogData = default;
                 }
 
                 public void Save(int slot) {
 
-                    Current.realTime = System.DateTime.Now.ToString("yyyy.MM.dd HH:mm");
+                    Global_EventSystem.VisualNovel.CallOnSave(this);
 
-                    //Current.spriteData = MySpriteManager.Instance.ToData();
-                    Current.audioData = Global_SoundManager.ToData();
+                    realTime = DateTime.Now.ToString("yyyy.MM.dd HH:mm");
 
                     Camera mainCamera = Camera.main;
 
@@ -363,7 +363,7 @@ namespace TP.Data {
 
                     MonoBehaviour.Destroy(renderTexture);
 
-                    Current.SetThumbnail(ResizeTexture(screenShot, mainCamera.pixelRect.size * .1f).EncodeToPNG()); // 일단 용량 최적화를 위해서 줄이기는 하는데......
+                    SetThumbnail(ResizeTexture(screenShot, mainCamera.pixelRect.size * .1f).EncodeToPNG()); // 일단 용량 최적화를 위해서 줄이기는 하는데......
 
                     BinaryFormatter binaryFormatter = new BinaryFormatter();
                     string path = Application.persistentDataPath + "/Save";
@@ -441,18 +441,30 @@ namespace TP.Data {
                     }
 
                 }
-                public void QuickSave(int slot) {
+                public void Clear() {
+                    cursor = 0;
+                    flag = FlagID.None;
+                    book = BookID.None;
+                    gameTime = string.Empty;
+                    realTime = string.Empty;
+                    thumbnail = null;
+                    thumbnailData = null;
+                    audioData = null;
+                    spriteData = null;
+                    lastLogData = default;
+                }
+                public void QuickSave() {
                     BinaryFormatter binaryFormatter = new BinaryFormatter();
                     string path = Application.persistentDataPath + "/Save";
                     Directory.CreateDirectory(path);
-                    FileStream fStream = new FileStream(path + $"/save_{slot}.TIGER", FileMode.Create);
+                    FileStream fStream = new FileStream(path + $"/save_{SLOT_QUICKSAVE}.TIGER", FileMode.Create);
+
+                    Global_EventSystem.VisualNovel.CallOnSave(this);
 
                     // 퀵세이브에 필요하지 않은 요소들은 제거
                     realTime = string.Empty;
                     thumbnail = null;
                     thumbnailData = null;
-
-                    audioData = Global_SoundManager.ToData();
 
                     binaryFormatter.Serialize(fStream, this);
                     fStream.Close();
@@ -462,7 +474,6 @@ namespace TP.Data {
                     thumbnail = new Texture2D(2, 2);
                     thumbnail.LoadImage(thumbnailData);
                 }
-
             }
         }
     }

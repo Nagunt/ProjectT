@@ -34,11 +34,16 @@ namespace TP.UI {
         }
 
         private void OnClick_QuickSave() {
-            Debug.Log("QuickSave");
+            Data.Global_LocalData.Save.Current.QuickSave();
         }
 
         private void OnClick_QuickLoad() {
-            Event.Global_EventSystem.VisualNovel.CallOnSkipStateChanged(false);
+            if (Data.Global_LocalData.Save.Check(Data.Global_LocalData.Save.SLOT_QUICKSAVE)) {
+                Debug.Log($"퀵 세이브 파일 로드");
+                Sound.Global_SoundManager.StopAll();
+                Data.Global_LocalData.Save.Load(Data.Global_LocalData.Save.SLOT_QUICKSAVE);
+                Scene.Global_SceneManager.LoadScene(Scene.SceneID.World, 1f);
+            }
         }
 
         private void OnClick_Log() {

@@ -42,8 +42,8 @@ namespace TP.UI {
             }
             return this;
         }
-        public void TypewriterEffect(UnityAction onComplete) {
-            StartCoroutine(Routine(onComplete));
+        public void TypewriterEffect(UnityAction callback) {
+            StartCoroutine(Routine(callback));
 
             IEnumerator Routine(UnityAction onComplete) {
                 foreach (SubUI_Word word in words) {

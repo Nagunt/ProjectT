@@ -21,7 +21,6 @@ namespace TP.Scene {
                 Global_EventSystem.UI.Call(UIEventID.Global_터치잠금설정);
                 Global_EventSystem.UI.Call<float, UnityAction>(UIEventID.Global_FadeOut, time, () => {
                     SceneManager.LoadScene(sceneIndex);
-                    Global_EventSystem.Scene.CallOnSceneChanged(currentScene, sceneID.ToString());
                     Global_EventSystem.UI.Call<float, UnityAction>(UIEventID.Global_FadeIn, time, () => {
                         Global_EventSystem.UI.Call(UIEventID.Global_터치잠금해제);
                     });
@@ -29,7 +28,6 @@ namespace TP.Scene {
             }
             else {
                 SceneManager.LoadScene(sceneIndex);
-                Global_EventSystem.Scene.CallOnSceneChanged(currentScene, sceneID.ToString());
             }
         }
 
@@ -47,7 +45,7 @@ namespace TP.Scene {
                 m_instance.LoadSceneAtObject(sceneIndex);
             }
 
-            void OnSceneChanged(string scene1, string scene2) {
+            void OnSceneChanged(SceneID current, SceneID next) {
                 Global_EventSystem.Scene.onSceneChanged -= OnSceneChanged;
                 Global_EventSystem.UI.Call<float, UnityAction>(UIEventID.Global_FadeIn, time, () => {
                     Global_EventSystem.UI.Call(UIEventID.Global_터치잠금해제);
@@ -61,9 +59,8 @@ namespace TP.Scene {
 
         private IEnumerator LoadRoutine(int index) {
             Global_EventSystem.UI.Call(UIEventID.Global_로딩UIOpen);
-            string currentScene = SceneManager.GetActiveScene().name;
 
-            Debug.Log("현재 씬은 " + currentScene);
+            Debug.Log("현재 씬은 " + Global_EventSystem.Scene.Current);
 
             yield return null;
 
@@ -79,11 +76,12 @@ namespace TP.Scene {
                         Global_EventSystem.UI.Call<float>(UIEventID.Global_로딩UI진행도설정, 0.99f);
                         operation.allowSceneActivation = true;
                         yield return new WaitForEndOfFrame();
-                        Global_EventSystem.Scene.CallOnSceneChanged(currentScene, ((SceneID)index).ToString());
                     }
                 }
                 yield return null;
             }
+
+            Debug.Log("씬 로드 끝");
 
             Global_EventSystem.UI.Call<float>(UIEventID.Global_로딩UI진행도설정, 1f);
 

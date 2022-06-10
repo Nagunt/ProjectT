@@ -33,6 +33,7 @@ namespace TP.UI {
         private ReadOnlyDictionary<CharacterID, CharacterData> charData;
 
         protected override void Start() {
+            charData = CharacterLoader.Data;
             image_Profile.rectTransform.SetShapeWithCurrentAspectRatio(aspectRatio);
             image_Rank.rectTransform.SetShapeWithCurrentAspectRatio(aspectRatio);
             for(int i = 0; i < button_Slot.Length; ++i) {
@@ -117,11 +118,6 @@ namespace TP.UI {
                     k += 1;
                 }
             }
-        }
-
-        public void SetData(ReadOnlyDictionary<CharacterID, CharacterData> data)
-        {
-            charData = data;
         }
 
         public void SetCursor(int data)

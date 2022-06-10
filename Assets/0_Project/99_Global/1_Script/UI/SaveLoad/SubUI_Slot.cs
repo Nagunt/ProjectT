@@ -45,9 +45,9 @@ namespace TP.UI {
             else {
                 if (Data.Global_LocalData.Save.Check(m_slot)) {
                     Debug.Log($"{m_slot}번 세이브 파일 로드");
-                    Sound.Global_SoundManager.StopAll();
+                    Sound.Global_SoundManager.StopAll(Sound.Global_SoundManager.SoundOption.FadeOut, 1f);
                     Data.Global_LocalData.Save.Load(m_slot);
-                    Scene.Global_SceneManager.LoadSceneAsync(Scene.SceneID.World);
+                    Scene.Global_SceneManager.LoadSceneAsync(Scene.SceneID.World, 1f);
                 }
             }
         }
@@ -66,6 +66,7 @@ namespace TP.UI {
                 m_Button.interactable = isSave;
                 m_Button.onClick.AddListener(() => { OnClick(isSave); });
             }
+            m_Button.GetComponent<RectTransform>().SetShapeWithCurrentAspectRatio(Global_CameraCrop.ScreenRatio);
         }
     }
 }

@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TP.Data;
+using TP.VisualNovel;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,7 +15,8 @@ namespace TP.UI {
             Event.Global_EventSystem.UI.Register<string>(UIEventID.World_대화UI직책설정, SetText_Position);
             Event.Global_EventSystem.UI.Register<string, UnityAction>(UIEventID.World_대화UI내용설정, SetText_Dialogue);
             Event.Global_EventSystem.UI.Register<string, UnityAction>(UIEventID.World_대화UI내용수정, ModifyText_Dialogue);
-            Event.Global_EventSystem.UI.Register<string, UnityAction>(UIEventID.World_대화UI내용갱신, RefreshText_Dialogue);
+
+            Event.Global_EventSystem.VisualNovel.onLoad += OnLoad;
         }
 
         private void SetText_Name(string value) {
@@ -39,14 +43,18 @@ namespace TP.UI {
             }
         }
 
-        private void RefreshText_Dialogue(string value, UnityAction callback)
-        {
-            if (_uiObject != null)
-            {
-                _uiObject.SetText_Dialogue(value, true, true, callback);
+        private void OnLoad(Global_LocalData.Save.SaveData saveData) {
+            if (saveData.lastLogData.Check() &&
+                _uiObject != null) {
+                _uiObject.SetText_Name(saveData.lastLogData.name);
+                _uiObject.SetText_Position(CharacterLoader.GetPlacement(saveData.lastLogData.name));
+                _uiObject.SetText_Dialogue(saveData.lastLogData.content, true, true, null);
             }
         }
 
+        private void OnDestroy() {
+            Event.Global_EventSystem.VisualNovel.onLoad -= OnLoad;
+        }
     }
 }
 

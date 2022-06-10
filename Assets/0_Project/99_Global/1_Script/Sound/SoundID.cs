@@ -4,10 +4,6 @@ namespace TP.Sound {
         None = 0,
 
         // BGM
-        A,
-        B,
-        C,
-        D,
         bgm01,
         bgm02,
         bgm03,
@@ -38,8 +34,8 @@ namespace TP.Sound {
         hungry,
         nature_sound_birds,
         nature_sound_bug,
-        ppsh41_shot,
-        ppsh_41_shot,
+        ppsh41_shot_1,
+        ppsh41_shot_2,
         radio_sound,
         receiver,
         shell_reload,
@@ -50,11 +46,10 @@ namespace TP.Sound {
         tank_fire_shot,
         tank_hit,
         tank_track,
-        tank_track_1,
-        tokarev_shot,
         tokarev_shot_1,
+        tokarev_shot_2,
+        uncork,
         weapons_reload,
-        weapons_reload_1,
         weapons_use
     }
 }

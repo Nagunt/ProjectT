@@ -43,7 +43,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 11
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -98,8 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 1dd0dda0ebab69c4b9f68b0cb4c31778,
-    type: 2}
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -119,8 +118,6 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
-    maxJobWorkers: 0
-    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -204,7 +201,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!223 &157532254
 Canvas:
   m_ObjectHideFlags: 0
@@ -604,7 +600,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6031680210223263871, guid: 93c9b4b3e1b90944ebac9b8a42f26a18, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 93c9b4b3e1b90944ebac9b8a42f26a18, type: 3}
 --- !u!1 &994365676
 GameObject:
@@ -684,7 +681,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!223 &994365680
 Canvas:
   m_ObjectHideFlags: 0
@@ -744,7 +740,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
-  m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
   m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018,
@@ -809,6 +804,7 @@ GameObject:
   - component: {fileID: 1328933614}
   - component: {fileID: 1328933613}
   - component: {fileID: 1328933612}
+  - component: {fileID: 1328933615}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -881,6 +877,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1328933615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328933611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d369f0307e0e3ac4baecd68ce67e495e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera: {fileID: 1328933613}
+  maxTargetAspect: {x: 2400, y: 1080}
+  minTargetAspect: {x: 1920, y: 1080}
 --- !u!1 &1479226227
 GameObject:
   m_ObjectHideFlags: 0
@@ -962,7 +973,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
 --- !u!223 &1479226231
 Canvas:
   m_ObjectHideFlags: 0
@@ -1407,6 +1417,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Master_VisualNovel
+      objectReference: {fileID: 0}
+    - target: {fileID: 1721105189176849924, guid: b5fec9c912838334cae65bb26b1b76c9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5fec9c912838334cae65bb26b1b76c9, type: 3}

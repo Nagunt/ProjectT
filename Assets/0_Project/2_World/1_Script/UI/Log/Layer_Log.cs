@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TP.Data;
+using TP.VisualNovel;
 using UnityEngine;
 
 namespace TP.UI {
@@ -15,6 +17,7 @@ namespace TP.UI {
             logData = new Queue<TPLogData>();
             Event.Global_EventSystem.UI.Register(UIEventID.World_로그UIOpen, Open);
             Event.Global_EventSystem.UI.Register(UIEventID.World_로그UIClose, Close);
+            Event.Global_EventSystem.VisualNovel.onLoad += OnLoad;
             Event.Global_EventSystem.VisualNovel.onLogDataAdded += OnLogDataAdded;
             Event.Global_EventSystem.VisualNovel.onLogDataModified += OnLogDataModified;
         }
@@ -33,6 +36,11 @@ namespace TP.UI {
         {
             base.Close();
             Event.Global_EventSystem.VisualNovel.CallOnGameStateChanged(true);
+        }
+        private void OnLoad(Global_LocalData.Save.SaveData saveData) {
+            if (saveData.lastLogData.Check()) {
+                Event.Global_EventSystem.VisualNovel.CallOnLogDataAdded(saveData.lastLogData);
+            }
         }
 
         private void OnLogDataAdded(TPLogData data)
@@ -63,6 +71,7 @@ namespace TP.UI {
 
         private void OnDestroy()
         {
+            Event.Global_EventSystem.VisualNovel.onLoad -= OnLoad;
             Event.Global_EventSystem.VisualNovel.onLogDataAdded -= OnLogDataAdded;
             Event.Global_EventSystem.VisualNovel.onLogDataModified -= OnLogDataModified;
         }

@@ -20,10 +20,13 @@ namespace TP.UI {
         protected override void Start() {
             showSequence = DOTween.Sequence();
             showSequence.
+                SetUpdate(true).
+                OnStart(() => m_CanvasGroup.alpha = 0).
                 Append(m_CanvasGroup.DOFade(1, 0.25f));
 
             hideSequence = DOTween.Sequence();
             hideSequence.
+                SetUpdate(true).
                 OnStart(() => m_CanvasGroup.alpha = 1).
                 Append(m_CanvasGroup.DOFade(0, 0.25f));
             m_CanvasGroup.alpha = 0;

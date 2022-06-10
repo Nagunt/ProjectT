@@ -2,9 +2,11 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using TP.Data;
 using TP.Event;
+using TP.Scene;
 using UnityEngine;
 
 namespace TP.Sound {
@@ -91,8 +93,8 @@ namespace TP.Sound {
         private Dictionary<int, AudioObject> m_audio;
         private Queue<AudioSource> m_audioQueue;
         private Dictionary<int, Tweener> m_tweeners;
-        private Dictionary<SoundID, AudioClip> m_localSoundData;
-        private Dictionary<SoundID, AudioClip> m_globalSoundData;
+        private ReadOnlyDictionary<SoundID, AudioClip> m_localSoundData;
+        private ReadOnlyDictionary<SoundID, AudioClip> m_globalSoundData;
 
         private void Awake() {
             Debug.Log("사운드매니저 초기화");
@@ -105,36 +107,43 @@ namespace TP.Sound {
                 newAudio.gameObject.SetActive(false);
                 m_audioQueue.Enqueue(newAudio);
             }
+            Global_EventSystem.VisualNovel.onSave += OnSave;
+            Global_EventSystem.VisualNovel.onLoad += OnLoad;
             Global_EventSystem.Scene.onSceneChanged += OnSceneChanged;
             Global_EventSystem.Sound.onBGMValueChanged += OnBGMValueChanged;
         }
 
-        public static void AddSoundData(SerializableDictionary<SoundID, AudioClip> soundData, bool isLocal = true) {
+        public static void AddSoundData(ReadOnlyDictionary<SoundID, AudioClip> soundData, bool isLocal = true) {
+            Dictionary<SoundID, AudioClip> newData = new Dictionary<SoundID, AudioClip>(soundData);
             if (isLocal) {
-                if (m_instance.m_localSoundData == null) {
-                    m_instance.m_localSoundData = new Dictionary<SoundID, AudioClip>();
+                if (m_instance.m_localSoundData != null) {
+                    var currentData = new Dictionary<SoundID, AudioClip>(m_instance.m_localSoundData);
+                    newData.ToList().ForEach(x => {
+                        if (currentData.ContainsKey(x.Key)) {
+                            currentData[x.Key] = x.Value;
+                        }
+                        else {
+                            currentData.Add(x.Key, x.Value);
+                        }
+                    });
+                    newData = currentData;
                 }
-                foreach (SerializableDictionary<SoundID, AudioClip>.Pair kv in soundData) {
-                    if (m_instance.m_localSoundData.ContainsKey(kv.Key)) {
-                        m_instance.m_localSoundData[kv.Key] = kv.Value;
-                    }
-                    else {
-                        m_instance.m_localSoundData.Add(kv.Key, kv.Value);
-                    }
-                }
+                m_instance.m_localSoundData = new ReadOnlyDictionary<SoundID, AudioClip>(newData);
             }
             else {
-                if (m_instance.m_globalSoundData == null) {
-                    m_instance.m_globalSoundData = new Dictionary<SoundID, AudioClip>();
+                if (m_instance.m_globalSoundData != null) {
+                    var currentData = new Dictionary<SoundID, AudioClip>(m_instance.m_globalSoundData);
+                    newData.ToList().ForEach(x => {
+                        if (currentData.ContainsKey(x.Key)) {
+                            currentData[x.Key] = x.Value;
+                        }
+                        else {
+                            currentData.Add(x.Key, x.Value);
+                        }
+                    });
+                    newData = currentData;
                 }
-                foreach (SerializableDictionary<SoundID, AudioClip>.Pair kv in soundData) {
-                    if (m_instance.m_globalSoundData.ContainsKey(kv.Key)) {
-                        m_instance.m_globalSoundData[kv.Key] = kv.Value;
-                    }
-                    else {
-                        m_instance.m_globalSoundData.Add(kv.Key, kv.Value);
-                    }
-                }
+                m_instance.m_globalSoundData = new ReadOnlyDictionary<SoundID, AudioClip>(newData);
             }
         }
 
@@ -185,13 +194,9 @@ namespace TP.Sound {
         public static int PlayBGMAtLocation(SoundID id, Vector3 position, SoundOption option = SoundOption.None, float fadeTime = 0f) {
             // Only 프로퍼티가 있으면 해당 BGM은 반드시 하나만 존재해야 한다.
             if (option.HasFlag(SoundOption.Only)) {
-                int key = -1;
-                var list = m_instance.m_audio.Where((kv) => kv.Value.ID == id).ToList();
-                if (list.Count > 0) {
-                    key = list[0].Value.Key;
-                    if (list[0].Value.IsPause) {
-                        ResumeBGM(key, option, fadeTime);
-                    }
+                int key = GetChannel(id);
+                if (key >= 0) {
+                    ResumeBGM(key, option, fadeTime);
                     return key;
                 }
             }
@@ -227,6 +232,7 @@ namespace TP.Sound {
             if (option.HasFlag(SoundOption.FadeIn)) {
                 Tweener tweener = newAudio.DOFade(volume, fadeTime);
                 tweener.
+                    SetUpdate(true).
                     SetLink(newAudio.gameObject, LinkBehaviour.KillOnDisable).
                     OnStart(() => {
                         newAudio.Play();
@@ -261,6 +267,7 @@ namespace TP.Sound {
                 if (option.HasFlag(SoundOption.FadeOut)) {
                     Tweener tweener = audioSource.DOFade(0, fadeTime);
                     tweener.
+                        SetUpdate(true).
                         SetLink(audioSource.gameObject, LinkBehaviour.KillOnDisable).
                         OnStart(() => {
                             m_instance.m_tweeners.Add(id, tweener);
@@ -292,6 +299,7 @@ namespace TP.Sound {
                     audioSource.volume = 0;
                     Tweener tweener = audioSource.DOFade(value, fadeTime);
                     tweener.
+                        SetUpdate(true).
                         SetLink(audioSource.gameObject, LinkBehaviour.KillOnDisable).
                         OnStart(() => {
                             audioObject.UnPause();
@@ -322,6 +330,7 @@ namespace TP.Sound {
                 if (option.HasFlag(SoundOption.FadeOut)) {
                     Tweener tweener = audioSource.DOFade(0, fadeTime);
                     tweener.
+                        SetUpdate(true).
                         SetLink(audioSource.gameObject, LinkBehaviour.KillOnDisable).
                         OnStart(() => {
                             m_instance.m_tweeners.Add(id, tweener);
@@ -339,6 +348,16 @@ namespace TP.Sound {
                     audioObject.Complete();
                 }
             }
+        }
+
+        public static void PauseBGM(SoundID id, SoundOption option = SoundOption.None, float fadeTime = 0f) {
+            PauseBGM(GetChannel(id), option, fadeTime);
+        }
+        public static void ResumeBGM(SoundID id, SoundOption option = SoundOption.None, float fadeTime = 0f) {
+            ResumeBGM(GetChannel(id), option, fadeTime);
+        }
+        public static void StopBGM(SoundID id, SoundOption option = SoundOption.None, float fadeTime = 0f) {
+            StopBGM(GetChannel(id), option, fadeTime);
         }
 
         public static void PauseAll(SoundOption option = SoundOption.None, float fadeTime = 0f) {
@@ -359,20 +378,15 @@ namespace TP.Sound {
             }
         }
 
-        public static Dictionary<SoundID, int> Parse(TPAudioData[] data) {
-            Dictionary<SoundID, int> channelInfo = new Dictionary<SoundID, int>();
-            if (data == null) return channelInfo;
-            foreach (TPAudioData audioData in data) {
-                int channel = PlayBGMAtLocation(audioData.id, audioData.Position, audioData.option, audioData.fadeTime);
-                if (audioData.isPause) {
-                    PauseBGM(channel);
-                }
-                if (channelInfo.ContainsKey(audioData.id) == false)
-                {
-                    channelInfo.Add(audioData.id, channel);
+        public static void Parse(TPAudioData[] data) {
+            if (data != null) {
+                foreach (TPAudioData audioData in data) {
+                    int channel = PlayBGMAtLocation(audioData.id, audioData.Position, audioData.option, audioData.fadeTime);
+                    if (audioData.isPause) {
+                        PauseBGM(channel);
+                    }
                 }
             }
-            return channelInfo;
         }
 
         public static TPAudioData[] ToData() {
@@ -395,7 +409,9 @@ namespace TP.Sound {
             yield return new WaitUntil(() => audioObject.IsComplete);
             if (audioObject.IsActiveAndEnabled == false) yield break;
 
-            if (audioObject.IsBGM) m_audio.Remove(audioObject.Key);
+            if (audioObject.IsBGM) {
+                m_audio.Remove(audioObject.Key);
+            }
             m_audioQueue.Enqueue(audioObject.Reset());
 
             Global_EventSystem.Sound.CallOnSoundEnd(audioObject.ID);
@@ -422,10 +438,24 @@ namespace TP.Sound {
             return null;
         }
 
-        private void OnSceneChanged(string current, string next) {
+        public static int GetChannel(SoundID key) {
+            var list = m_instance.m_audio.Where((kv) => kv.Value.ID == key).ToList();
+            if (list.Count > 0) {
+                return list[0].Key;
+            }
+            return -1;
+        }
+
+        private void OnSave(Global_LocalData.Save.SaveData saveData) {
+            saveData.audioData = ToData();
+        }
+        private void OnLoad(Global_LocalData.Save.SaveData saveData) {
+            Parse(saveData.audioData);
+        }
+        private void OnSceneChanged(SceneID current, SceneID next) {
             if (m_localSoundData != null &&
                 m_localSoundData.Count > 0) {
-                m_localSoundData.Clear();
+                m_localSoundData = null;
             }
         }
         private void OnBGMValueChanged(float value) {
@@ -434,6 +464,13 @@ namespace TP.Sound {
                     kv.Value.AudioSource.volume = value;
                 }
             }
+        }
+
+        private void OnDestroy() {
+            Global_EventSystem.VisualNovel.onSave -= OnSave;
+            Global_EventSystem.VisualNovel.onLoad -= OnLoad;
+            Global_EventSystem.Scene.onSceneChanged -= OnSceneChanged;
+            Global_EventSystem.Sound.onBGMValueChanged -= OnBGMValueChanged;
         }
     }
 }

@@ -29,6 +29,7 @@ namespace TP.UI {
         }
 
         private void OnClick_Start() {
+            Data.Global_LocalData.Save.Current.Clear();
             Global_SceneManager.LoadSceneAsync(SceneID.World);
         }
 

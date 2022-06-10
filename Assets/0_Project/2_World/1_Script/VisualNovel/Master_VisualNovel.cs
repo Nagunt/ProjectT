@@ -36,7 +36,7 @@ namespace TP.VisualNovel
         /// </summary>
         public bool IsSkip {
             get {
-                return Event.Global_EventSystem.VisualNovel.Skip;
+                return Global_EventSystem.VisualNovel.Skip;
             }
         }
 
@@ -45,7 +45,7 @@ namespace TP.VisualNovel
         /// </summary>
         public bool GameState {
             get {
-                return Event.Global_EventSystem.VisualNovel.GameState;
+                return Global_EventSystem.VisualNovel.GameState;
             }
         }
 
@@ -65,11 +65,6 @@ namespace TP.VisualNovel
         private WaitForSeconds waitForDelay;
 
         private ReadOnlyCollection<ReadOnlyDictionary<string, object>> vnData;
-        private ReadOnlyDictionary<CharacterID, CharacterData> charData;
-        private ReadOnlyDictionary<SpriteID, Sprite> spriteData;
-        private ReadOnlyDictionary<BackgroundID, Sprite> backgroundData;
-
-        private Dictionary<SoundID, int> channelInfo;
 
         // Start is called before the first frame update
         void Start() {
@@ -81,35 +76,17 @@ namespace TP.VisualNovel
             yield return new WaitForEndOfFrame();
 
             // 콜백 등록
-            Global_EventSystem.Sound.onSoundEnd += OnSoundEnd;
             Global_EventSystem.VisualNovel.onScreenTouched += OnClick;
             Global_EventSystem.VisualNovel.onSkipStateChanged += OnSkipStateChanged;
             Global_EventSystem.UI.Register(UIEventID.Global_설정UIClose, OnSpeedValueChanged);
 
+            // 이벤트 호출
             Global_EventSystem.VisualNovel.CallOnGameStateChanged(true);
             Global_EventSystem.VisualNovel.CallOnSkipStateChanged(false);
+            Global_EventSystem.VisualNovel.CallOnLoad(Current);
 
             // 데이터 로드
-
             vnData = vnLoader.ToData();
-            charData = characterLoader.ToDictionary();
-            spriteData = spriteLoader.ToDictionary();
-            backgroundData = backgroundLoader.ToDictionary();
-
-            channelInfo = Global_SoundManager.Parse(Current.audioData);
-
-            if (Current.lastLogData.Check())
-            {
-                Global_EventSystem.VisualNovel.CallOnLogDataAdded(Current.lastLogData);
-                Global_EventSystem.UI.Call(UI.UIEventID.World_대화UI이름설정, Current.lastLogData.name);
-                Global_EventSystem.UI.Call<string, UnityAction>(UIEventID.World_대화UI내용갱신, Current.lastLogData.content, null);
-            }
-            
-            if(charData == null)
-            {
-                Debug.Log("tq");
-            }
-            Global_EventSystem.UI.Call(UIEventID.World_도감UI데이터설정, charData);
 
             isFirst = true;
             isOpening = false;
@@ -135,14 +112,17 @@ namespace TP.VisualNovel
                         Debug.Log("실행: " + cmds[i].ToString());
                         cmds[i].Execute(this);
                         if (TPCommand.runningCmd != null) {
-                            yield return new WaitUntil(() => TPCommand.runningCmd.IsEnd);
+                            if (TPCommand.runningCmd.IsEnd == false) {
+                                yield return new WaitUntil(() => TPCommand.runningCmd.IsEnd);
+                            }
                             TPCommand.runningCmd = null;
-                            yield return new WaitUntil(() => GameState);
+                            if (GameState == false) {
+                                yield return new WaitUntil(() => GameState);
+                            }
                         }
                     }
                 }
-                if(isFirst && isOpening == false)
-                {
+                if (isFirst && isOpening == false) {
                     Global_EventSystem.UI.Call(UIEventID.World_이펙트UI검은화면해제);
                 }
 
@@ -154,13 +134,20 @@ namespace TP.VisualNovel
                     TPLogData newLogData = new TPLogData(nameText, contentText);
                     Current.lastLogData = newLogData;
                     Global_EventSystem.UI.Call(UIEventID.World_대화UI이름설정, nameText);
-                    Global_EventSystem.VisualNovel.CallOnLogDataAdded(newLogData);
+                    Global_EventSystem.UI.Call(UIEventID.World_대화UI직책설정, CharacterLoader.GetPlacement(nameText));
+                    if (isFirst) {
+                        Global_EventSystem.VisualNovel.CallOnLogDataModified(newLogData);
+                    }
+                    else {
+                        Global_EventSystem.VisualNovel.CallOnLogDataAdded(newLogData);
+                    }
                 }
                 else {
                     TPLogData lastLogData = Current.lastLogData;
                     lastLogData.content += contentText;
                     Current.lastLogData = lastLogData;
                     Global_EventSystem.UI.Call(UIEventID.World_대화UI이름설정, lastLogData.name);
+                    Global_EventSystem.UI.Call(UIEventID.World_대화UI직책설정, CharacterLoader.GetPlacement(lastLogData.name));
                     Global_EventSystem.VisualNovel.CallOnLogDataModified(lastLogData);
                 }
 
@@ -186,6 +173,8 @@ namespace TP.VisualNovel
 
                 Current.cursor += 1;
             }
+
+            
         }
 
         #region 콜백
@@ -195,14 +184,6 @@ namespace TP.VisualNovel
                 isTouch = true;
             }
         }
-
-        private void OnSoundEnd(SoundID id)
-        {
-            if (channelInfo.ContainsKey(id))
-            {
-                channelInfo.Remove(id);
-            }
-        }
         private void OnSkipStateChanged(bool state) {
             if (isWaitForTouch) {
                 if (state) {
@@ -210,7 +191,6 @@ namespace TP.VisualNovel
                 }
             }
         }
-
         private void OnSpeedValueChanged() {
             waitForDelay = new WaitForSeconds(Data.Global_LocalData.Setting.Delay);
         }
@@ -234,7 +214,6 @@ namespace TP.VisualNovel
             }
         }
 
-        // _name 효과음을 재생합니다.
         public void PlaySFX(string name) {
             if (Enum.TryParse(name, out SoundID id))
             {
@@ -243,46 +222,35 @@ namespace TP.VisualNovel
             Global_EventSystem.VisualNovel.CallOnCommandEnd();
         }
 
-        // _name 배경음악을 재생합니다.
         public void PlayBGM(string name) {
             if(Enum.TryParse(name, out SoundID id))
             {
-                int channel = Global_SoundManager.PlayBGM(id, Global_SoundManager.SoundOption.Loop | Global_SoundManager.SoundOption.Only);
-                if (channelInfo.ContainsKey(id) == false)
-                {
-                    channelInfo.Add(id, channel);
-                }
+                Global_SoundManager.PlayBGM(id, Global_SoundManager.SoundOption.Loop | Global_SoundManager.SoundOption.Only);
             }
             Global_EventSystem.VisualNovel.CallOnCommandEnd();
         }
 
-        // _name 배경음악을 일시정지합니다.
         public void PauseBGM(string name) {
-            if (Enum.TryParse(name, out SoundID id) &&
-                channelInfo.TryGetValue(id, out int channel))
+            if (Enum.TryParse(name, out SoundID id))
             {
-                Global_SoundManager.PauseBGM(channel);
+                Global_SoundManager.PauseBGM(id);
             }
             Global_EventSystem.VisualNovel.CallOnCommandEnd();
         }
 
-        // 모든 배경음악을 일시정지합니다.
         public void PauseBGMAll() {
             Global_SoundManager.PauseAll();
             Global_EventSystem.VisualNovel.CallOnCommandEnd();
         }
 
-        // _name 배경음악을 _fadeTime 초간 페이드 아웃하며 완전히 정지합니다.
         public void StopBGM(string name, float fadeTime) {
-            if (Enum.TryParse(name, out SoundID id) &&
-                channelInfo.TryGetValue(id, out int channel))
+            if (Enum.TryParse(name, out SoundID id))
             {
-                Global_SoundManager.StopBGM(channel, fadeTime > 0 ? Global_SoundManager.SoundOption.FadeOut : Global_SoundManager.SoundOption.None, fadeTime);
+                Global_SoundManager.StopBGM(id, fadeTime > 0 ? Global_SoundManager.SoundOption.FadeOut : Global_SoundManager.SoundOption.None, fadeTime);
             }
             Global_EventSystem.VisualNovel.CallOnCommandEnd();
         }
 
-        // 모든 배경음악을 완전히 정지합니다.
         public void StopBGMAll() {
             Global_SoundManager.StopAll();
             Global_EventSystem.VisualNovel.CallOnCommandEnd();
@@ -305,29 +273,28 @@ namespace TP.VisualNovel
         public void SetSprite(float index, string name)
         {
             if (Enum.TryParse(name, out SpriteID id) &&
-                spriteData.TryGetValue(id, out Sprite sprite))
+                SpriteLoader.Data.TryGetValue(id, out Sprite sprite))
             {
                 Global_EventSystem.UI.Call(UIEventID.World_비주얼노벨UI캐릭터설정, (int)index, sprite);
             }
             else
             {
                 Debug.Log(name + "스프라이트 없어요.");
+                Global_EventSystem.UI.Call<int, Sprite>(UIEventID.World_비주얼노벨UI캐릭터설정, (int)index, null);
             }
             Global_EventSystem.VisualNovel.CallOnCommandEnd();
         }
 
-        // _index 스프라이트의 필터를 _name 으로 설정합니다.
         public void SetFilter(string name)
         {
             //MySpriteManager.Instance.SetFilter(_name);
             Global_EventSystem.VisualNovel.CallOnCommandEnd();
         }
 
-        // 배경화면을 _name 으로 설정합니다.
         public void SetBackground(string name)
         {
             if (Enum.TryParse(name, out BackgroundID id) &&
-                backgroundData.TryGetValue(id, out Sprite background))
+                BackgroundLoader.Data.TryGetValue(id, out Sprite background))
             {
                 Global_EventSystem.UI.Call(UIEventID.World_비주얼노벨UI배경설정, background);
             }
@@ -347,6 +314,38 @@ namespace TP.VisualNovel
                     isFirst);
             Global_EventSystem.UI.Call(UIEventID.World_이펙트UI검은화면해제);
             isOpening = true;
+        }
+
+        public void MakeShake(float time) {
+            if (time > 0) {
+                Global_EventSystem.UI.Call<float, UnityAction>(
+                    UIEventID.World_이펙트UI흔들림효과,
+                    IsSkip ? Global_LocalData.Setting.Delay : time,
+                    () => Global_EventSystem.VisualNovel.CallOnCommandEnd());
+            }
+            else {
+                Global_EventSystem.VisualNovel.CallOnCommandEnd();
+            }
+        }
+
+        public void MakeSelection(string select1, string select2, float nextID1, float nextID2) {
+            Global_EventSystem.VisualNovel.CallOnSkipStateChanged(false);
+
+            Global_EventSystem.UI.Call(
+                UIEventID.World_선택지UI생성,
+                new TPSelectionData[] {
+                    new TPSelectionData(select1, () =>
+                    {
+                        Current.cursor = (int)nextID1;
+                        Global_EventSystem.VisualNovel.CallOnCommandEnd();
+                    }),
+                    new TPSelectionData(select2, () =>
+                    {
+                        Current.cursor = (int)nextID2;
+                        Global_EventSystem.VisualNovel.CallOnCommandEnd();
+                    })
+            });
+
         }
 
         public void DontEraseLastSentence() {
@@ -379,7 +378,6 @@ namespace TP.VisualNovel
         #endregion
 
         private void OnDestroy() {
-            Global_EventSystem.Sound.onSoundEnd -= OnSoundEnd;
             Global_EventSystem.VisualNovel.onScreenTouched -= OnClick;
             Global_EventSystem.VisualNovel.onSkipStateChanged -= OnSkipStateChanged;
             StopAllCoroutines();

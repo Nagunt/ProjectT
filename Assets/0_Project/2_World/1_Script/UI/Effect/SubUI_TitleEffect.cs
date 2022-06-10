@@ -43,6 +43,9 @@ namespace TP.UI
 
             if (isSkip)
             {
+                m_CanvasGroup.alpha = 1;
+                m_CanvasGroup.interactable = true;
+                m_CanvasGroup.blocksRaycasts = true;
                 text_TitleEffect.maxVisibleCharacters = maxCount;
                 sequence.
                     AppendInterval(TP.Data.Global_LocalData.Setting.Delay).

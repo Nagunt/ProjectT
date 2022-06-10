@@ -4,31 +4,22 @@ using System.Collections.ObjectModel;
 using UnityEngine;
 namespace TP.Data
 {
-    public class Global_DataLoader<K, V> : MonoBehaviour
-    {
-        [Serializable]
-        public struct DataKeyValuePair
-        {
-            public K key;
-            public V value;
-        }
 
+    public class Global_DataLoader<K, V> : MonoBehaviour {
+
+        [Header("- Data")]
         [SerializeField]
-        private DataKeyValuePair[] m_data;
-
-        public ReadOnlyDictionary<K, V> ToDictionary()
-        {
-            Dictionary<K, V> dic = new Dictionary<K, V>(m_data.Length);
-
-            for (int i = 0; i < m_data.Length; ++i)
-            {
-                if (dic.ContainsKey(m_data[i].key))
-                {
-                    dic[m_data[i].key] = m_data[i].value;
+        private List<K> m_Keys;
+        [SerializeField]
+        private List<V> m_Values;
+        public ReadOnlyDictionary<K, V> ToData() {
+            Dictionary<K, V> dic = new Dictionary<K, V>();
+            for(int i = 0; i < m_Keys.Count; ++i) {
+                if (dic.ContainsKey(m_Keys[i])) {
+                    dic[m_Keys[i]] = m_Values[i];
                 }
-                else
-                {
-                    dic.Add(m_data[i].key, m_data[i].value);
+                else {
+                    dic.Add(m_Keys[i], m_Values[i]);
                 }
             }
             return new ReadOnlyDictionary<K, V>(dic);

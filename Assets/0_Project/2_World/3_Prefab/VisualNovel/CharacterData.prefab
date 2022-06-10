@@ -43,68 +43,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ef7fdcb0de8c441ab76d5e990ef481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_data:
-  - key: 1
-    value:
-      name: "\uC18C\uB0D0 \uC774\uBC14\uB178\uBE0C\uB098"
-      where: "\uC18C\uB828\uAD70"
-      birth: 1919.08.13
-      placement: "\uC18C\uB828\uAD70 \uD3EC\uC218"
-      rank: {fileID: 21300000, guid: 581dd227cd39b994090d0c0b4e0e6f60, type: 3}
-      profile: {fileID: 21300000, guid: b69ca5db7c5de5245981f5cc9dbc8017, type: 3}
-  - key: 2
-    value:
-      name: "\uBBF8\uD558\uC77C \uC54C\uB809\uC0B0\uB4DC\uB85C\uBE44\uCE58"
-      where: "\uC18C\uB828\uAD70"
-      birth: 1920.11.25
-      placement: "\uC18C\uB828\uAD70 \uC6B4\uC804\uC218"
-      rank: {fileID: 21300000, guid: bc0d5b35d484e10449a258032c8954f5, type: 3}
-      profile: {fileID: 21300000, guid: d48648d91e4050947a66828eaf745e98, type: 3}
-  - key: 3
-    value:
-      name: "\uC774\uB9AC\uB098 \uBC14\uC2E4\uB9AC\uC608\uBE0C\uB098"
-      where: "\uC18C\uB828\uAD70"
-      birth: 1923.01.31
-      placement: "\uC18C\uB828\uAD70 \uD0C4\uC57D\uC218"
-      rank: {fileID: 21300000, guid: bc0d5b35d484e10449a258032c8954f5, type: 3}
-      profile: {fileID: 21300000, guid: 0f5646930b0d55d408d94eb685197584, type: 3}
-  - key: 4
-    value:
-      name: "\uB808\uBCA0\uCE74 \uD638\uD504\uB9CC"
-      where: "\uC720\uB300\uC778"
-      birth: 1920.12.03
-      placement: "\uBBFC\uAC04\uC778"
-      rank: {fileID: 21300000, guid: a117256f6741aa54c832c6738c78595b, type: 3}
-      profile: {fileID: 21300000, guid: 3d88fd38807edb9458172831315e27a5, type: 3}
-  - key: 5
-    value:
-      name: "\uC544\uB378\uB77C\uC774\uB370 \uD3F0 \uC544\uC774\uC820\uBCA0\uB974\uD06C"
-      where: "\uB3C5\uC77C\uAD6D\uBC29\uAD70"
-      birth: 1915.03.28
-      placement: "\uB3C5\uC77C\uAD6D\uBC29\uAD70 \uC804\uCC28\uC7A5"
-      rank: {fileID: 21300000, guid: e3702f42df0625849908f8ecaf8b7d88, type: 3}
-      profile: {fileID: 21300000, guid: e3cd989fc1464e64cab1a5303dfac9ba, type: 3}
-  - key: 6
-    value:
-      name: "\uB2E4\uB2C8\uC5D8 \uC288\uBBF8\uD2B8"
-      where: "\uB3C5\uC77C\uAD6D\uBC29\uAD70"
-      birth: 1924.10.22
-      placement: "\uB3C5\uC77C\uAD6D\uBC29\uAD70 \uBB34\uC120\uBCD1"
-      rank: {fileID: 21300000, guid: 0fb87742121c15d4bb19a3b198a461c0, type: 3}
-      profile: {fileID: 21300000, guid: 6f8042beb789f0144a45b2f497cd2bc9, type: 3}
-  - key: 7
-    value:
-      name: "Dr. \uD504\uB780\uCE20"
-      where: "\uBB34\uC7A5\uCE5C\uC704\uB300"
-      birth: 1910.03.16
-      placement: "\uBB34\uC7A5\uCE5C\uC704\uB300 \uC804\uCC28\uC7A5"
-      rank: {fileID: 21300000, guid: bb99e6f958ae56c47b47ea267448ff86, type: 3}
-      profile: {fileID: 21300000, guid: 179dae03ab7db004fa86533979c35c6d, type: 3}
-  - key: 0
-    value:
-      name: 
-      where: 
-      birth: 
-      placement: 
-      rank: {fileID: 0}
-      profile: {fileID: 21300000, guid: d6f32749cbe26ab4caec27cfa1c06f25, type: 3}
+  m_Keys: 0000000001000000020000000300000004000000050000000600000007000000
+  m_Values:
+  - name: "\uC7A0\uAE08"
+    where: 
+    birth: 
+    placement: 
+    rank: {fileID: 0}
+    profile: {fileID: 21300000, guid: d6f32749cbe26ab4caec27cfa1c06f25, type: 3}
+  - name: "\uC18C\uB0D0 \uC774\uBC14\uB178\uBE0C\uB098"
+    where: "\uC18C\uB828\uAD70"
+    birth: 1919.08.13
+    placement: "T-34 \uD3EC\uC218"
+    rank: {fileID: 21300000, guid: 581dd227cd39b994090d0c0b4e0e6f60, type: 3}
+    profile: {fileID: 21300000, guid: b69ca5db7c5de5245981f5cc9dbc8017, type: 3}
+  - name: "\uBBF8\uD558\uC77C \uC54C\uB809\uC0B0\uB4DC\uB85C\uBE44\uCE58"
+    where: "\uC18C\uB828\uAD70"
+    birth: 1920.11.25
+    placement: "T-34 \uC6B4\uC804\uC218"
+    rank: {fileID: 21300000, guid: bc0d5b35d484e10449a258032c8954f5, type: 3}
+    profile: {fileID: 21300000, guid: d48648d91e4050947a66828eaf745e98, type: 3}
+  - name: "\uC774\uB9AC\uB098 \uBC14\uC2E4\uB9AC\uC608\uBE0C\uB098"
+    where: "\uC18C\uB828\uAD70"
+    birth: 1923.01.31
+    placement: "T-34 \uD0C4\uC57D\uC218"
+    rank: {fileID: 21300000, guid: bc0d5b35d484e10449a258032c8954f5, type: 3}
+    profile: {fileID: 21300000, guid: 0f5646930b0d55d408d94eb685197584, type: 3}
+  - name: "\uB808\uBCA0\uCE74 \uD638\uD504\uB9CC"
+    where: "\uC720\uB300\uC778"
+    birth: 1920.12.03
+    placement: "\uBBFC\uAC04\uC778"
+    rank: {fileID: 21300000, guid: a117256f6741aa54c832c6738c78595b, type: 3}
+    profile: {fileID: 21300000, guid: 3d88fd38807edb9458172831315e27a5, type: 3}
+  - name: "\uC544\uB378\uB77C\uC774\uB370 \uD3F0 \uC544\uC774\uC820\uBCA0\uB974\uD06C"
+    where: "\uB3C5\uC77C\uAD6D\uBC29\uAD70"
+    birth: 1915.03.28
+    placement: "Pz. IV \uC804\uCC28\uC7A5"
+    rank: {fileID: 21300000, guid: e3702f42df0625849908f8ecaf8b7d88, type: 3}
+    profile: {fileID: 21300000, guid: e3cd989fc1464e64cab1a5303dfac9ba, type: 3}
+  - name: "\uB2E4\uB2C8\uC5D8 \uC288\uBBF8\uD2B8"
+    where: "\uB3C5\uC77C\uAD6D\uBC29\uAD70"
+    birth: 1924.10.22
+    placement: "Pz. IV \uBB34\uC120\uBCD1"
+    rank: {fileID: 21300000, guid: 0fb87742121c15d4bb19a3b198a461c0, type: 3}
+    profile: {fileID: 21300000, guid: 6f8042beb789f0144a45b2f497cd2bc9, type: 3}
+  - name: "Dr. \uD504\uB780\uCE20"
+    where: "\uBB34\uC7A5\uCE5C\uC704\uB300"
+    birth: 1910.03.16
+    placement: "\uD2F0\uAC70 \uC804\uCC28\uC7A5"
+    rank: {fileID: 21300000, guid: bb99e6f958ae56c47b47ea267448ff86, type: 3}
+    profile: {fileID: 21300000, guid: 179dae03ab7db004fa86533979c35c6d, type: 3}

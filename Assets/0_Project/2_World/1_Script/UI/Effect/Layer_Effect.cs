@@ -12,6 +12,7 @@ namespace TP.UI
             base.Start();
             Event.Global_EventSystem.UI.Register(UIEventID.World_이펙트UI검은화면설정, SetDark);
             Event.Global_EventSystem.UI.Register(UIEventID.World_이펙트UI검은화면해제, RemoveDark);
+            Event.Global_EventSystem.UI.Register<float, UnityAction>(UIEventID.World_이펙트UI흔들림효과, MakeShake);
             Event.Global_EventSystem.UI.Register<string, UnityAction, bool>(UIEventID.World_이펙트UI타이틀생성, MakeTitle);
         }
         
@@ -35,13 +36,14 @@ namespace TP.UI
         {
             if(_uiObject != null)
             {
-                _uiObject.MakeTitleEffect(data, onComplete, isDark, Event.Global_EventSystem.VisualNovel.Skip);
+                _uiObject.Effect_Title(data, onComplete, isDark, Event.Global_EventSystem.VisualNovel.Skip);
+            }
+        }
+
+        private void MakeShake(float time, UnityAction onComplete) {
+            if (_uiObject != null) {
+                _uiObject.Effect_Shake(time, onComplete);
             }
         }
     }
-
-
-
-
-
 }
