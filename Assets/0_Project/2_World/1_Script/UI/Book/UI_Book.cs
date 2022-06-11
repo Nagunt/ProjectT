@@ -50,7 +50,10 @@ namespace TP.UI {
             {
                 buttonIndex.Add(i + 2);
             }
-            SetInfo(cursor);
+            if (Current.book.HasFlag((BookID)System.Enum.GetValues(typeof(BookID)).GetValue(cursor)))
+                SetInfo(cursor);
+            else
+                SetInfo(0);
         }
 
         public override void Dispose(UnityAction onEndDispose)
@@ -80,39 +83,41 @@ namespace TP.UI {
 
                 image_Rank.rectTransform.SetShapeWithCurrentAspectRatio(aspectRatio);
 
-                Vector2 rankSize = new Vector2(image_Rank.rectTransform.rect.width, image_Rank.rectTransform.rect.height);
-                Vector2 sourceSize = new Vector2(data.rank.rect.width, data.rank.rect.height);
+                if (data.rank != null) {
+                    image_Rank.gameObject.SetActive(true);
 
-                Vector2 rankAspectRatio = new Vector2(1, rankSize.y / rankSize.x);
-                Vector2 sourceAspectRatio = new Vector2(1, sourceSize.y / sourceSize.x);
+                    Vector2 rankSize = new Vector2(image_Rank.rectTransform.rect.width, image_Rank.rectTransform.rect.height);
+                    Vector2 sourceSize = new Vector2(data.rank.rect.width, data.rank.rect.height);
 
-                if (sourceAspectRatio.y > rankAspectRatio.y)
-                {
-                    // 이미지의 y비율이 공간의 y비율보다 크다, 즉 x방향으로 두껍다
-                    float fixedWidth = rankSize.y * (1 / sourceAspectRatio.y);
-                    image_Rank.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, fixedWidth);
+                    Vector2 rankAspectRatio = new Vector2(1, rankSize.y / rankSize.x);
+                    Vector2 sourceAspectRatio = new Vector2(1, sourceSize.y / sourceSize.x);
+
+                    if (sourceAspectRatio.y > rankAspectRatio.y) {
+                        // 이미지의 y비율이 공간의 y비율보다 크다, 즉 x방향으로 두껍다
+                        float fixedWidth = rankSize.y * (1 / sourceAspectRatio.y);
+                        image_Rank.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, fixedWidth);
+                    }
+                    else {
+                        // 이미지의 y비율이 공간의 y비율보다 작다, 즉 y방향으로 두껍다
+                        float fixedHeight = rankSize.x * sourceAspectRatio.y;
+                        image_Rank.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, -image_Rank.rectTransform.offsetMax.y, fixedHeight);
+                    }
                 }
-                else
-                {
-                    // 이미지의 y비율이 공간의 y비율보다 작다, 즉 y방향으로 두껍다
-                    float fixedHeight = rankSize.x * sourceAspectRatio.y;
-                    image_Rank.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, -image_Rank.rectTransform.offsetMax.y, fixedHeight);
+                else {
+                    image_Rank.gameObject.SetActive(false);
                 }
 
-                cursor = index;
+                if (index > 0) cursor = index;
 
                 buttonIndex.Clear();
                 int k = 0;
-                for (int i = 1; i < charData.Count; ++i)
-                {
-                    if (index == i) continue;
+                for (int i = 1; i < charData.Count; ++i) {
+                    if (index == i || k >= button_Slot.Length) continue;
                     buttonIndex.Add(i);
-                    if (Data.Global_LocalData.Save.Current.book.HasFlag((BookID)System.Enum.GetValues(typeof(BookID)).GetValue(i)))
-                    {
+                    if (Data.Global_LocalData.Save.Current.book.HasFlag((BookID)System.Enum.GetValues(typeof(BookID)).GetValue(i))) {
                         button_Slot[k].image.sprite = charData[(CharacterID)i].profile;
                     }
-                    else
-                    {
+                    else {
                         button_Slot[k].image.sprite = charData[CharacterID.None].profile;
                     }
                     k += 1;

@@ -40,7 +40,7 @@ namespace TP.UI {
         private void OnClick_QuickLoad() {
             if (Data.Global_LocalData.Save.Check(Data.Global_LocalData.Save.SLOT_QUICKSAVE)) {
                 Debug.Log($"퀵 세이브 파일 로드");
-                Sound.Global_SoundManager.StopAll();
+                Sound.Global_SoundManager.StopAll(Sound.Global_SoundManager.SoundOption.FadeOut, 1f);
                 Data.Global_LocalData.Save.Load(Data.Global_LocalData.Save.SLOT_QUICKSAVE);
                 Scene.Global_SceneManager.LoadScene(Scene.SceneID.World, 1f);
             }

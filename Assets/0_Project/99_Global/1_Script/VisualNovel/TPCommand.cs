@@ -66,8 +66,8 @@ namespace TP.VisualNovel {
             try {
                 method.Invoke(target, factors);
             }
-            catch (Exception) {
-                Debug.Log($"인자값 문제 발생, 대체 실행 : {name}");
+            catch (Exception e) {
+                Debug.Log($"인자값 문제 발생 : {e}\n 대체 실행 : {name}");
                 ParameterInfo[] infos = method.GetParameters();
                 for (int i = 0; i < infos.Length; ++i) {
                     if (infos[i].ParameterType == typeof(float[])) {

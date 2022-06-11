@@ -14,8 +14,9 @@ namespace TP.UI {
         private Image image_Progress;
 
         public void SetProgress(float value) {
-            text_Progress.SetText($"{value * 100}%");
-            image_Progress.fillAmount = value;
+            float data = Mathf.Clamp(value, 0, 1f);
+            text_Progress.SetText($"{data * 100}%");
+            image_Progress.fillAmount = data;
         }
     }
 }

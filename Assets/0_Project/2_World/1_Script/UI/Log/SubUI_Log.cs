@@ -93,7 +93,7 @@ namespace TP.UI {
                                         newWord.SetText(calcStr);
                                         if (newWord.PreferredWidth >= maxWidth) {
                                             wordStr = wordData.Substring(0, sIndex - 1);
-                                            leftStr = wordData.Substring(sIndex);
+                                            leftStr = wordData.Substring(sIndex - 1);
                                             break;
                                         }
                                     }

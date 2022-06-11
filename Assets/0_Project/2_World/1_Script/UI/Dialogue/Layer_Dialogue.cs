@@ -15,6 +15,7 @@ namespace TP.UI {
             Event.Global_EventSystem.UI.Register<string>(UIEventID.World_대화UI직책설정, SetText_Position);
             Event.Global_EventSystem.UI.Register<string, UnityAction>(UIEventID.World_대화UI내용설정, SetText_Dialogue);
             Event.Global_EventSystem.UI.Register<string, UnityAction>(UIEventID.World_대화UI내용수정, ModifyText_Dialogue);
+            Event.Global_EventSystem.UI.Register<float>(UIEventID.World_이펙트UI흔들림효과, MakeShake);
 
             Event.Global_EventSystem.VisualNovel.onLoad += OnLoad;
         }
@@ -40,6 +41,12 @@ namespace TP.UI {
         private void ModifyText_Dialogue(string value, UnityAction callback) {
             if (_uiObject != null) {
                 _uiObject.SetText_Dialogue(value, false, false, callback);
+            }
+        }
+
+        private void MakeShake(float time) {
+            if (_uiObject != null) {
+                _uiObject.Effect_Shake(time);
             }
         }
 

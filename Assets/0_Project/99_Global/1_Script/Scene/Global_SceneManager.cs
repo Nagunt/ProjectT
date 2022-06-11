@@ -69,16 +69,26 @@ namespace TP.Scene {
             AsyncOperation operation = SceneManager.LoadSceneAsync(index);
             operation.allowSceneActivation = false;
 
+            float timer = 0f;
+            float progress = 0f;
             while (!operation.isDone) {
-                Global_EventSystem.UI.Call<float>(UIEventID.Global_로딩UI진행도설정, operation.progress);
-                if (operation.progress >= 0.9f) {
-                    if (operation.allowSceneActivation == false) {
-                        Global_EventSystem.UI.Call<float>(UIEventID.Global_로딩UI진행도설정, 0.99f);
-                        operation.allowSceneActivation = true;
-                        yield return new WaitForEndOfFrame();
+                yield return null;
+                timer += Time.unscaledDeltaTime;
+
+                if (operation.progress < 0.9f) {
+                    progress = Mathf.Lerp(progress, operation.progress, timer);
+                    if (progress >= operation.progress) {
+                        timer = 0f;
                     }
                 }
-                yield return null;
+                else {
+                    progress = Mathf.Lerp(progress, 1f, timer);
+                    if (progress >= 1.0f) {
+                        operation.allowSceneActivation = true;
+                    }
+                }
+
+                Global_EventSystem.UI.Call<float>(UIEventID.Global_로딩UI진행도설정, progress);
             }
 
             Debug.Log("씬 로드 끝");

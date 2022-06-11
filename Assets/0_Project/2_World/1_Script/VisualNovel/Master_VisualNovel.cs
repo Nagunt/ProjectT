@@ -63,6 +63,8 @@ namespace TP.VisualNovel
         private bool isWaitForTouch = false;
 
         private WaitForSeconds waitForDelay;
+        private WaitUntil waitForTouch;
+        private WaitUntil waitForGameState;
 
         private ReadOnlyCollection<ReadOnlyDictionary<string, object>> vnData;
 
@@ -92,6 +94,8 @@ namespace TP.VisualNovel
             isOpening = false;
 
             waitForDelay = new WaitForSeconds(Global_LocalData.Setting.Delay);
+            waitForTouch = new WaitUntil(() => isTouch);
+            waitForGameState = new WaitUntil(() => GameState);
 
             while (true) {
                 string _id = vnData[Current.cursor][KEY_ID].ToString();
@@ -117,7 +121,7 @@ namespace TP.VisualNovel
                             }
                             TPCommand.runningCmd = null;
                             if (GameState == false) {
-                                yield return new WaitUntil(() => GameState);
+                                yield return waitForGameState;
                             }
                         }
                     }
@@ -163,15 +167,19 @@ namespace TP.VisualNovel
                     }
                     else {
                         isWaitForTouch = true;
-                        yield return new WaitUntil(() => isTouch);
+                        yield return waitForTouch;
                         isWaitForTouch = false;
                     }
                 }
-                yield return new WaitUntil(() => GameState);
+
+                if (GameState == false) {
+                    yield return waitForGameState;
+                }
 
                 if (isFirst) isFirst = false;
 
                 Current.cursor += 1;
+
             }
 
             
@@ -204,9 +212,7 @@ namespace TP.VisualNovel
                 Sequence sequence = DOTween.Sequence();
                 sequence.
                     AppendInterval(time).
-                    OnComplete(() => {
-                        Global_EventSystem.VisualNovel.CallOnCommandEnd();
-                    }).
+                    OnComplete(() => Global_EventSystem.VisualNovel.CallOnCommandEnd()).
                     Play();
             }
             else {
@@ -301,6 +307,7 @@ namespace TP.VisualNovel
             else
             {
                 Debug.Log(name + "배경화면 없어요.");
+                Global_EventSystem.UI.Call<Sprite>(UIEventID.World_비주얼노벨UI배경설정, null);
             }
             Global_EventSystem.VisualNovel.CallOnCommandEnd();
         }

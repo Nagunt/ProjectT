@@ -21,6 +21,8 @@ namespace TP.UI {
         private TextMeshProUGUI text_Position;
         [SerializeField]
         private GameObject object_Position;
+        [SerializeField]
+        private GameObject object_Dialogue;
         [Space(20)]
         [SerializeField]
         private RectTransform area_Text;
@@ -47,6 +49,12 @@ namespace TP.UI {
         private bool isTouch = false;
         private bool isTyping = false;
 
+        private RectTransform m_nameTransform;
+        private RectTransform m_positionTransform;
+        private RectTransform m_dialogueTransform;
+
+        private Sequence shakeSequence = null;
+
         private SubUI_Cursor cursor;
 
         protected override void Start() {
@@ -54,6 +62,10 @@ namespace TP.UI {
             m_lineHeight = (int)(area_Text.rect.height / m_lineCount);
 
             m_lineStack = new Stack<SubUI_Line>();
+
+            m_nameTransform = object_Name.GetComponent<RectTransform>();
+            m_positionTransform = object_Position.GetComponent<RectTransform>();
+            m_dialogueTransform = object_Dialogue.GetComponent<RectTransform>();
 
             SubUI_Line m_calcLine =
                 Instantiate(subUI_Line, area_Text).SetShape(0, m_lineHeight);
@@ -461,6 +473,68 @@ namespace TP.UI {
                         Play();
                 }
                 callback?.Invoke();
+            }
+        }
+
+        public void Effect_Shake(float time) {
+            Vector2 nameFirstPos = m_nameTransform.anchoredPosition;
+            Vector2 positionFirstPos = m_positionTransform.anchoredPosition;
+            Vector2 dialogueFirstPos = m_dialogueTransform.anchoredPosition;
+
+            Vector2 nameLastPos = Vector2.zero;
+            Vector2 positionLastPos = Vector2.zero;
+            Vector2 dialogueLastPos = Vector2.zero;
+
+            Sequence sequence = DOTween.Sequence();
+            sequence.
+                OnStart(() => {
+                    Event.Global_EventSystem.VisualNovel.onSkipStateChanged += OnSkipStateChanged;
+                    Event.Global_EventSystem.VisualNovel.onGameStateChanged += OnGameStateChanged;
+                    if (shakeSequence.IsActive()) {
+                        shakeSequence.Kill(true);
+                    }
+                    shakeSequence = sequence;
+                });
+
+            sequence.Append(m_nameTransform.DOShakeAnchorPos(time));
+            sequence.Join(m_positionTransform.DOShakeAnchorPos(time));
+            sequence.Join(m_dialogueTransform.DOShakeAnchorPos(time));
+
+            sequence.
+                OnComplete(() => {
+                    m_nameTransform.anchoredPosition = nameFirstPos;
+                    m_positionTransform.anchoredPosition = positionFirstPos;
+                    m_dialogueTransform.anchoredPosition = dialogueFirstPos;
+                }).
+                OnKill(() => {
+                    Event.Global_EventSystem.VisualNovel.onSkipStateChanged -= OnSkipStateChanged;
+                    Event.Global_EventSystem.VisualNovel.onGameStateChanged -= OnGameStateChanged;
+                    shakeSequence = null;
+                }).
+                Play();
+
+            void OnSkipStateChanged(bool state) {
+                if (state) {
+                    shakeSequence.Complete();
+                }
+            }
+
+            void OnGameStateChanged(bool state) {
+                if (state) {
+                    m_nameTransform.anchoredPosition = nameLastPos;
+                    m_positionTransform.anchoredPosition = positionLastPos;
+                    m_dialogueTransform.anchoredPosition = dialogueLastPos;
+                    shakeSequence.Play();
+                }
+                else {
+                    nameLastPos = m_nameTransform.anchoredPosition;
+                    positionLastPos = m_positionTransform.anchoredPosition;
+                    dialogueLastPos = m_dialogueTransform.anchoredPosition;
+                    m_nameTransform.anchoredPosition = nameFirstPos;
+                    m_positionTransform.anchoredPosition = positionFirstPos;
+                    m_dialogueTransform.anchoredPosition = dialogueFirstPos;
+                    shakeSequence.Pause();
+                }
             }
         }
 

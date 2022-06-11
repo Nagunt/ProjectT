@@ -19,9 +19,19 @@ namespace TP.UI {
         protected override void Start() {
             m_ScrollRect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0);
 
+            string lastName = string.Empty;
+
             foreach (TPLogData currentData in m_LogData) {
                 SubUI_Log newLog = Instantiate(subUI_Log, m_ScrollRect.content);
-                newLog.Init(currentData.name, currentData.content);
+
+                if (lastName.Equals(currentData.name)) {
+                    newLog.Init(string.Empty, currentData.content);
+                }
+                else {
+                    newLog.Init(currentData.name, currentData.content);
+                    lastName = currentData.name;
+                }
+
                 newLog.RectTransform.anchoredPosition = new Vector2(0, -m_ScrollRect.content.rect.height);
                 m_ScrollRect.content.SetSizeWithCurrentAnchors(
                     RectTransform.Axis.Vertical,

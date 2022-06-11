@@ -104,6 +104,7 @@ namespace TP.Sound {
             m_tweeners = new Dictionary<int, Tweener>(MAX_COUNT);
             for (int i = 0; i < MAX_COUNT; ++i) {
                 AudioSource newAudio = Instantiate(m_audioSource, m_audioParent);
+                newAudio.gameObject.name = $"{i}";
                 newAudio.gameObject.SetActive(false);
                 m_audioQueue.Enqueue(newAudio);
             }
@@ -215,8 +216,8 @@ namespace TP.Sound {
 
             float volume = Global_LocalData.Setting.BGM;
 
-            int channel = m_instance.MAX_COUNT - m_instance.m_audioQueue.Count;
             AudioSource newAudio = m_instance.m_audioQueue.Dequeue();
+            int channel = int.Parse(newAudio.gameObject.name);
 
             newAudio.clip = audioClip;
             newAudio.loop = option.HasFlag(SoundOption.Loop);
@@ -413,7 +414,6 @@ namespace TP.Sound {
                 m_audio.Remove(audioObject.Key);
             }
             m_audioQueue.Enqueue(audioObject.Reset());
-
             Global_EventSystem.Sound.CallOnSoundEnd(audioObject.ID);
         }
 
