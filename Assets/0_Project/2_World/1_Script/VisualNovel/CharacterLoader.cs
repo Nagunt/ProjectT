@@ -9,7 +9,7 @@ namespace TP.VisualNovel
     public class CharacterLoader : Global_DataLoader<CharacterID, CharacterData>
     {
         private static CharacterLoader m_instance = null;
-        private ReadOnlyDictionary<CharacterID, CharacterData> m_data;
+
         public static ReadOnlyDictionary<CharacterID, CharacterData> Data {
             get {
                 if (m_instance != null) {

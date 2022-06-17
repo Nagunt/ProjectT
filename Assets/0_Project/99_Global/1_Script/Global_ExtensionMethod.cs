@@ -87,10 +87,14 @@ namespace TP {
         }
 
         public static void Parse(this Image image, TPSpriteData data) {
-            Debug.Log(data.imageKey);
             if (System.Enum.TryParse(data.imageKey, out BackgroundID backgroundID) &&
                 BackgroundLoader.Data.TryGetValue(backgroundID, out Sprite backgroundData)) {
                 image.sprite = backgroundData;
+                image.gameObject.SetActive(true);
+            }
+            else if (System.Enum.TryParse(data.imageKey, out FilterID filterID) &&
+                FilterLoader.Data.TryGetValue(filterID, out Sprite filterData)) {
+                image.sprite = filterData;
                 image.gameObject.SetActive(true);
             }
             else if (System.Enum.TryParse(data.imageKey, out SpriteID spriteID) &&

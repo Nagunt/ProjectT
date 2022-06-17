@@ -6,7 +6,7 @@ namespace TP.VisualNovel {
 
     public class SpriteLoader : Global_DataLoader<SpriteID, Sprite> {
         private static SpriteLoader m_instance = null;
-        private ReadOnlyDictionary<SpriteID, Sprite> m_data;
+
         public static ReadOnlyDictionary<SpriteID, Sprite> Data {
             get {
                 if (m_instance != null) {

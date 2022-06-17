@@ -49,6 +49,7 @@ namespace TP.UI {
         World_이펙트UI검은화면해제,
 
         World_이펙트UI타이틀생성,
+        World_이펙트UI파티클생성,
         World_이펙트UI흔들림효과,
 
         World_선택지UI생성,

@@ -54,6 +54,7 @@ namespace TP.VisualNovel {
             }
             return str;
         }
+
         public void Execute(object target) {
             Type type = typeof(Master_VisualNovel);
             MethodInfo method = type.GetMethod(name);
@@ -76,6 +77,14 @@ namespace TP.VisualNovel {
                             newFactors[j] = (float)factors[j];
                         }
                         method.Invoke(target, new object[] { newFactors });
+                        break;
+                    }
+                    else if (infos[i].ParameterType == typeof(string)) {
+                        object[] newFactors = new object[factors.Length];
+                        for (int j = 0; j < newFactors.Length; ++j) {
+                            newFactors[j] = $"{factors[j]}";
+                        }
+                        method.Invoke(target, newFactors);
                         break;
                     }
                 }

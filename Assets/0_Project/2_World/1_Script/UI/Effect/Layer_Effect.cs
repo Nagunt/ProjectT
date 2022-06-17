@@ -14,6 +14,7 @@ namespace TP.UI
             Event.Global_EventSystem.UI.Register(UIEventID.World_이펙트UI검은화면해제, RemoveDark);
             Event.Global_EventSystem.UI.Register<float, UnityAction>(UIEventID.World_이펙트UI흔들림효과, MakeShake);
             Event.Global_EventSystem.UI.Register<string, UnityAction, bool>(UIEventID.World_이펙트UI타이틀생성, MakeTitle);
+            Event.Global_EventSystem.UI.Register<GameObject, float, UnityAction>(UIEventID.World_이펙트UI파티클생성, MakeParticle);
         }
         
         public void SetDark()
@@ -43,6 +44,12 @@ namespace TP.UI
         private void MakeShake(float time, UnityAction onComplete) {
             if (_uiObject != null) {
                 _uiObject.Effect_Shake(time, onComplete);
+            }
+        }
+
+        private void MakeParticle(GameObject target, float time, UnityAction onComplete) {
+            if(_uiObject != null) {
+                _uiObject.Effect_Particle(target, time, onComplete);
             }
         }
     }

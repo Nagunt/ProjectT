@@ -7,7 +7,6 @@ namespace TP.VisualNovel {
         battle_2,
         battle_3,
         battle_4,
-        color,
         firstBackground,
         meadow_day,
         meadow_night,

@@ -12,6 +12,9 @@ namespace TP.Data
         private List<K> m_Keys;
         [SerializeField]
         private List<V> m_Values;
+
+        protected ReadOnlyDictionary<K, V> m_data;
+
         public ReadOnlyDictionary<K, V> ToData() {
             Dictionary<K, V> dic = new Dictionary<K, V>();
             for(int i = 0; i < m_Keys.Count; ++i) {
