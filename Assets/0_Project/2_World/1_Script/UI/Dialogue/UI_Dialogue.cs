@@ -48,6 +48,7 @@ namespace TP.UI {
         private bool isSkip = false;
         private bool isTouch = false;
         private bool isTyping = false;
+        private bool isComplete = false;
 
         private RectTransform m_nameTransform;
         private RectTransform m_positionTransform;
@@ -427,7 +428,7 @@ namespace TP.UI {
                 if (isSkip == false &&
                     isRefresh == false) {
                     isTyping = true;
-                    bool isComplete = false;
+                    isComplete = false;
                     Tweener lineEffect = null;
                     for (int i = 0; i < lineData.Count; ++i) {
                         if (isTouch == false) {
@@ -474,6 +475,23 @@ namespace TP.UI {
                 }
                 callback?.Invoke();
             }
+        }
+
+        public void ClearText()
+        {
+            StopAllCoroutines();
+            SetText_Name(string.Empty);
+            SetText_Position(string.Empty);
+            if (cursor != null)
+            {
+                Destroy(cursor.gameObject);
+            }
+            anchor_Text.anchoredPosition = new Vector2(0, 0);   // ¾ÞÄ¿ ÃÊ±âÈ­
+            for (int i = anchor_Text.childCount - 1; i >= 0; --i)
+            {
+                Destroy(anchor_Text.GetChild(i).gameObject);
+            }
+            m_lineStack.Clear();
         }
 
         public void Effect_Shake(float time) {

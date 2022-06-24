@@ -76,6 +76,7 @@ namespace TP.Event {
             public static SaveEvent onLoad;
             public static VoidEvent onCommandEnd;
             public static VoidEvent onScreenTouched;
+            public static VoidEvent onSceneReloaded;
             public static BoolEvent onSkipStateChanged;
             public static BoolEvent onGameStateChanged;
             public static LogEvent onLogDataAdded;
@@ -98,6 +99,11 @@ namespace TP.Event {
 
             public static void CallOnScreenTouched() {
                 onScreenTouched?.Invoke();
+            }
+
+            public static void CallOnSceneReloaded()
+            {
+                onSceneReloaded?.Invoke();
             }
 
             public static void CallOnLogDataAdded(TPLogData data)

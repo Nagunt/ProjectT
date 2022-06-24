@@ -82,8 +82,6 @@ namespace TP.Sound {
         [Header("- Audio")]
         [SerializeField]
         private int MAX_COUNT = 20;
-        [SerializeField]
-        private float FADE_TIME = 1.5f;
         [Space(20)]
         [SerializeField]
         private AudioSource m_audioSource;

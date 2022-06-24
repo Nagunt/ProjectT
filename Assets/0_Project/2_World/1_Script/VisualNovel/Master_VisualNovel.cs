@@ -61,6 +61,7 @@ namespace TP.VisualNovel
             // 콜백 등록
             Global_EventSystem.VisualNovel.onScreenTouched += OnClick;
             Global_EventSystem.VisualNovel.onSkipStateChanged += OnSkipStateChanged;
+            Global_EventSystem.VisualNovel.onSceneReloaded += OnSceneReloaded;
             Global_EventSystem.UI.Register(UIEventID.Global_설정UIClose, OnSpeedValueChanged);
 
             // 이벤트 호출
@@ -115,6 +116,7 @@ namespace TP.VisualNovel
             // 콜백 등록
             Global_EventSystem.VisualNovel.onScreenTouched += OnClick;
             Global_EventSystem.VisualNovel.onSkipStateChanged += OnSkipStateChanged;
+            Global_EventSystem.VisualNovel.onSceneReloaded += OnSceneReloaded;
             Global_EventSystem.UI.Register(UIEventID.Global_설정UIClose, OnSpeedValueChanged);
 
             // 이벤트 호출
@@ -236,6 +238,12 @@ namespace TP.VisualNovel
         }
         private void OnSpeedValueChanged() {
             waitForDelay = new WaitForSeconds(Data.Global_LocalData.Setting.Delay);
+        }
+        private void OnSceneReloaded()
+        {
+            StopAllCoroutines();
+            if (isDebug) StartCoroutine(DebugRoutine());
+            else StartCoroutine(VisualNovelRoutine());
         }
 
         #endregion
@@ -505,6 +513,7 @@ namespace TP.VisualNovel
         private void OnDestroy() {
             Global_EventSystem.VisualNovel.onScreenTouched -= OnClick;
             Global_EventSystem.VisualNovel.onSkipStateChanged -= OnSkipStateChanged;
+            Global_EventSystem.VisualNovel.onSceneReloaded -= OnSceneReloaded;
             StopAllCoroutines();
         }
     }

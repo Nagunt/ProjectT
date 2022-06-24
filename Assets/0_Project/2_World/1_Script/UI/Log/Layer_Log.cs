@@ -20,6 +20,7 @@ namespace TP.UI {
             Event.Global_EventSystem.VisualNovel.onLoad += OnLoad;
             Event.Global_EventSystem.VisualNovel.onLogDataAdded += OnLogDataAdded;
             Event.Global_EventSystem.VisualNovel.onLogDataModified += OnLogDataModified;
+            Event.Global_EventSystem.VisualNovel.onSceneReloaded += OnSceneReloaded;
         }
 
         protected override void Open()
@@ -69,11 +70,18 @@ namespace TP.UI {
             }
         }
 
+        private void OnSceneReloaded()
+        {
+            base.Close();
+            logData.Clear();
+        }
+
         private void OnDestroy()
         {
             Event.Global_EventSystem.VisualNovel.onLoad -= OnLoad;
             Event.Global_EventSystem.VisualNovel.onLogDataAdded -= OnLogDataAdded;
             Event.Global_EventSystem.VisualNovel.onLogDataModified -= OnLogDataModified;
+            Event.Global_EventSystem.VisualNovel.onSceneReloaded -= OnSceneReloaded;
         }
     }
 }

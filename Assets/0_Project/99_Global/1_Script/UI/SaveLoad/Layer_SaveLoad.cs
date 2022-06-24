@@ -15,6 +15,10 @@ namespace TP.UI {
             {
                 Event.Global_EventSystem.UI.Call(UIEventID.Global_로드UIClose);
             };
+            Event.Global_EventSystem.VisualNovel.onSceneReloaded += () =>
+            {
+                Event.Global_EventSystem.UI.Call(UIEventID.Global_로드UIClose);
+            };
         }
 
         private void OpenUI_Save() {

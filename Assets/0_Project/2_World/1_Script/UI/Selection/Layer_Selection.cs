@@ -13,7 +13,10 @@ namespace TP.UI
             base.Start();
             Event.Global_EventSystem.UI.Register<TPSelectionData[]>(UIEventID.World_선택지UI생성, MakeSelection);
             Event.Global_EventSystem.UI.Register(UIEventID.World_선택지UI선택완료, Close);
+            Event.Global_EventSystem.VisualNovel.onSceneReloaded += OnSceneReloaded;
         }
+
+        
 
 
         private void MakeSelection(params TPSelectionData[] data)
@@ -23,6 +26,16 @@ namespace TP.UI
             {
                 _uiObject.MakeSelection(data);
             }
+        }
+
+        private void OnSceneReloaded()
+        {
+            Close();
+        }
+
+        private void OnDestroy()
+        {
+            Event.Global_EventSystem.VisualNovel.onSceneReloaded -= OnSceneReloaded;
         }
     }
 

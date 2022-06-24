@@ -16,6 +16,7 @@ namespace TP.UI
             Event.Global_EventSystem.UI.Register(UIEventID.World_도감UIOpen, Open);
             Event.Global_EventSystem.UI.Register(UIEventID.World_도감UIClose, Close);
             Event.Global_EventSystem.UI.Register<int>(UIEventID.World_도감UI인덱스설정, SetIndex);
+            Event.Global_EventSystem.VisualNovel.onSceneReloaded += OnSceneReloaded;
         }
 
         protected override void Open()
@@ -30,6 +31,16 @@ namespace TP.UI
         private void SetIndex(int data)
         {
             index = data;
+        }
+
+        private void OnSceneReloaded()
+        {
+            Close();
+        }
+
+        private void OnDestroy()
+        {
+            Event.Global_EventSystem.VisualNovel.onSceneReloaded -= OnSceneReloaded;
         }
     }
 }

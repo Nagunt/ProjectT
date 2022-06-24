@@ -18,6 +18,7 @@ namespace TP.UI {
             Event.Global_EventSystem.UI.Register<float>(UIEventID.World_ÀÌÆåÆ®UIÈçµé¸²È¿°ú, MakeShake);
 
             Event.Global_EventSystem.VisualNovel.onLoad += OnLoad;
+            Event.Global_EventSystem.VisualNovel.onSceneReloaded += OnSceneReloaded;
         }
 
         private void SetText_Name(string value) {
@@ -59,8 +60,17 @@ namespace TP.UI {
             }
         }
 
+        private void OnSceneReloaded()
+        {
+            if(_uiObject != null)
+            {
+                _uiObject.ClearText();
+            }
+        }
+
         private void OnDestroy() {
             Event.Global_EventSystem.VisualNovel.onLoad -= OnLoad;
+            Event.Global_EventSystem.VisualNovel.onSceneReloaded -= OnSceneReloaded;
         }
     }
 }
