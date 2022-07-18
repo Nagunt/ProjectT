@@ -241,6 +241,9 @@ namespace TP.VisualNovel
         }
         private void OnSceneReloaded()
         {
+            Global_EventSystem.VisualNovel.onScreenTouched -= OnClick;
+            Global_EventSystem.VisualNovel.onSkipStateChanged -= OnSkipStateChanged;
+            Global_EventSystem.VisualNovel.onSceneReloaded -= OnSceneReloaded;
             StopAllCoroutines();
             if (isDebug) StartCoroutine(DebugRoutine());
             else StartCoroutine(VisualNovelRoutine());
